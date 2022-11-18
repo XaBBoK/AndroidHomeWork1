@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/posts_margins"
-    tools:context=".MainActivity">
+    tools:context=".presentation.MainActivity">
 
     <ImageView
         android:id="@+id/avatar"
