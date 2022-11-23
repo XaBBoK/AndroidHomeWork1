@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="posts_avatar_size">48dp</dimen>
-    <dimen name="posts_margins">16dp</dimen>
+    <dimen name="posts_margins">8dp</dimen>
     <dimen name="posts_margin_between_buttons">8dp</dimen>
 </resources>
