@@ -12,7 +12,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
         content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен → https://is.gd/xqtzIE",
         published = "21 мая в 15:28",
         likedByMe = false,
-        likes = 1399,
+        likes = 999,
         shares = 15999
     )
 
@@ -25,7 +25,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override fun like() {
         post = post.copy(
             likedByMe = !post.likedByMe,
-            likes = post.likes + if (post.likedByMe) 1 else -1
+            likes = post.likes + if (post.likedByMe) -1 else 1
         )
         data.value = post
     }
