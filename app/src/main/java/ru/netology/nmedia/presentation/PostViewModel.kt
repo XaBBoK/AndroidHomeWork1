@@ -6,6 +6,7 @@ import ru.netology.nmedia.domain.repository.PostRepository
 
 class PostViewModel(private val repository: PostRepository) : ViewModel() {
     val data = repository.getAll()
+
     /*fun like() = repository.like()
     fun share() = repository.share()*/
     fun likeById(id: Long) = repository.likeById(id)

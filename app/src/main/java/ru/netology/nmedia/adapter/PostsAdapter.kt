@@ -10,7 +10,8 @@ import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.formatNumber
 
-class PostsAdapter(private val likeClickListener: (Post) -> Unit) : ListAdapter<Post, PostViewHolder>(PostItemCallback()) {
+class PostsAdapter(private val likeClickListener: (Post) -> Unit) :
+    ListAdapter<Post, PostViewHolder>(PostItemCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(
             CardPostBinding.inflate(
