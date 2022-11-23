@@ -25,9 +25,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun subscribe() {
-        val adapter = PostsAdapter {
-            viewModel.likeById(it.id)
-        }
+        val adapter = PostsAdapter(
+            likeClickListener = {
+                viewModel.likeById(it.id)
+            },
+            shareClickListener = {
+                viewModel.shareById(it.id)
+            })
 
         binding.postList.adapter = adapter
 

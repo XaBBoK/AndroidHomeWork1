@@ -10,6 +10,7 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
     /*fun like() = repository.like()
     fun share() = repository.share()*/
     fun likeById(id: Long) = repository.likeById(id)
+    fun shareById(id: Long) = repository.shareById(id)
 
     class Factory(private val repo: PostRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

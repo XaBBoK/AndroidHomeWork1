@@ -10,7 +10,13 @@ import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.formatNumber
 
-class PostsAdapter(private val likeClickListener: (Post) -> Unit) :
+typealias OnLikeListener = (Post) -> Unit
+typealias OnShareListener = (Post) -> Unit
+
+class PostsAdapter(
+    private val likeClickListener: OnLikeListener,
+    private val shareClickListener: OnShareListener
+) :
     ListAdapter<Post, PostViewHolder>(PostItemCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(
@@ -18,7 +24,7 @@ class PostsAdapter(private val likeClickListener: (Post) -> Unit) :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ), likeClickListener
+            ), likeClickListener, shareClickListener
         )
     }
 
@@ -27,7 +33,11 @@ class PostsAdapter(private val likeClickListener: (Post) -> Unit) :
     }
 }
 
-class PostViewHolder(private val binding: CardPostBinding, val likeClickListener: (Post) -> Unit) :
+class PostViewHolder(
+    private val binding: CardPostBinding,
+    val likeClickListener: OnLikeListener,
+    val shareClickListener: OnShareListener
+) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
 
@@ -46,7 +56,7 @@ class PostViewHolder(private val binding: CardPostBinding, val likeClickListener
             }
 
             shareButton.setOnClickListener {
-                //viewModel.share()
+                shareClickListener(post)
             }
 
         }
