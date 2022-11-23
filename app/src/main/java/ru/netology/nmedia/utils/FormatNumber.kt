@@ -8,7 +8,7 @@ fun formatNumber(inputNumber: Int): String {
     var abbreviationsIndex = 0
     var number = inputNumber.absoluteValue
 
-    while (number > 1000) {
+    while (number >= 1000) {
         number /= 1000
         abbreviationsIndex++
     }
