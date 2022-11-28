@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace 'ru.netology.nmedia'
-    compileSdk 32
+    compileSdk 33
 
     buildFeatures.viewBinding = true
 
     defaultConfig {
         applicationId "ru.netology.nmedia"
         minSdk 23
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -33,6 +33,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildToolsVersion '33.0.1'
 }
 
 dependencies {
