@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import ru.netology.nmedia.adapter.OnPostInteractionListenerImpl
+import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.data.repository.PostRepositoryInMemoryImpl
 import ru.netology.nmedia.databinding.ActivityMainBinding

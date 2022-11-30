@@ -1,8 +1,9 @@
-package ru.netology.nmedia.adapter
+package ru.netology.nmedia.data.repository
 
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import ru.netology.nmedia.R
+import ru.netology.nmedia.adapter.OnPostInteractionListener
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
 
