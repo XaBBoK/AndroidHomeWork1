@@ -58,7 +58,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
         if (post.id == NON_EXISTING_POST_ID) {
             posts = posts + listOf<Post>(
                 Post(
-                    id = posts.size.toLong(),
+                    id = posts.maxOf { it.id } + 1,
                     author = "him",
                     content = post.content,
                     published = Date().toString(),
@@ -70,7 +70,10 @@ class PostRepositoryInMemoryImpl : PostRepository {
             data.value = posts
         } else {
             posts = posts.map {
-                if (it.id == post.id) it.copy(content = post.content) else it
+                if (it.id == post.id)
+                    it.copy(content = post.content)
+                else
+                    it
             }
         }
         data.value = posts
