@@ -6,4 +6,10 @@
     <string name="like_button">Like</string>
     <string name="share">Share</string>
     <string name="views">Read</string>
+    <string name="cancelEditingButton">Edit cancel button</string>
+    <string name="postContent">Post text</string>
+    <string name="post_edit">Editing a post</string>
+    <string name="send_button">Send button</string>
+    <string name="editPostMenuElement">Edit</string>
+    <string name="removePostMenuElement">Remove</string>
 </resources>
