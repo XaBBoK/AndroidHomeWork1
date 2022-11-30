@@ -3,4 +3,6 @@
     <dimen name="posts_avatar_size">48dp</dimen>
     <dimen name="posts_margins">8dp</dimen>
     <dimen name="posts_margin_between_buttons">8dp</dimen>
+    <dimen name="horizontal_divider_padding">5dp</dimen>
+    <dimen name="vertical_divider_padding">2dp</dimen>
 </resources>

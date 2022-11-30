@@ -7,4 +7,10 @@
     <string name="like_button">Лайкнуть</string>
     <string name="share">Поделиться</string>
     <string name="views">Прочитано</string>
+    <string name="cancelEditingButton">Кнопка отмены редактирования</string>
+    <string name="postContent">Текст сообщения</string>
+    <string name="post_edit">Редактирование сообщения</string>
+    <string name="send_button">Кнопка отправить</string>
+    <string name="editPostMenuElement">Редактировать</string>
+    <string name="removePostMenuElement">Удалить</string>
 </resources>

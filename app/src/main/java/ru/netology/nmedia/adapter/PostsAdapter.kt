@@ -1,6 +1,7 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,21 +11,20 @@ import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.formatNumber
 
-typealias OnLikeListener = (Post) -> Unit
-typealias OnShareListener = (Post) -> Unit
+interface OnPostInteractionListener {
+    fun onLike(post: Post)
+    fun onShare(post: Post)
+    fun onMore(post: Post, view: View)
+}
 
 class PostsAdapter(
-    private val likeClickListener: OnLikeListener,
-    private val shareClickListener: OnShareListener
-) :
-    ListAdapter<Post, PostViewHolder>(PostItemCallback()) {
+    private val onInteractionListener: OnPostInteractionListener
+) : ListAdapter<Post, PostViewHolder>(PostItemCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(
             CardPostBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ), likeClickListener, shareClickListener
+                LayoutInflater.from(parent.context), parent, false
+            ), onInteractionListener
         )
     }
 
@@ -35,10 +35,8 @@ class PostsAdapter(
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    val likeClickListener: OnLikeListener,
-    val shareClickListener: OnShareListener
-) :
-    RecyclerView.ViewHolder(binding.root) {
+    private val onInteractionListener: OnPostInteractionListener
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
 
         binding.apply {
@@ -52,11 +50,15 @@ class PostViewHolder(
 
         binding.apply {
             heartIcon.setOnClickListener {
-                likeClickListener(post)
+                onInteractionListener.onLike(post)
             }
 
             shareButton.setOnClickListener {
-                shareClickListener(post)
+                onInteractionListener.onShare(post)
+            }
+
+            more.setOnClickListener {
+                onInteractionListener.onMore(post, it)
             }
 
         }
@@ -64,10 +66,6 @@ class PostViewHolder(
 }
 
 class PostItemCallback : DiffUtil.ItemCallback<Post>() {
-    override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean =
-        oldItem.id == newItem.id
-
-
-    override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean =
-        oldItem == newItem
+    override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean = oldItem == newItem
 }
