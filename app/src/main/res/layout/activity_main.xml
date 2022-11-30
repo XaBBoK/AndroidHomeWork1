@@ -1,17 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/posts_margins"
-    tools:context=".presentation.MainActivity">
+    android:padding="@dimen/posts_margins">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/postList"
+    <FrameLayout
+        android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/card_post" />
+        android:layout_height="0dp"
 
-</FrameLayout>
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".presentation.MainActivity">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/postList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/card_post" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/horizontal_divider_padding"
+        android:paddingVertical="@dimen/vertical_divider_padding"
+        android:scaleType="fitXY"
+        android:src="@android:drawable/divider_horizontal_bright"
+        app:layout_constraintBottom_toTopOf="@id/editingTitle"
+        app:layout_constraintTop_toBottomOf="@id/frame"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/editingTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/post_edit"
+        android:textColor="@color/tint_color_highlight"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/editingOrigContent"
+        app:layout_constraintEnd_toStartOf="@+id/cancelEditingButton"
+        app:layout_constraintStart_toEndOf="@id/editPostIcon"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
+
+    <TextView
+        android:id="@+id/editingOrigContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@id/postContent"
+        app:layout_constraintEnd_toStartOf="@+id/cancelEditingButton"
+        app:layout_constraintStart_toEndOf="@id/editPostIcon"
+        app:layout_constraintTop_toBottomOf="@id/editingTitle" />
+
+    <ImageView
+        android:id="@+id/editPostIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/posts_margins"
+        app:layout_constraintBottom_toBottomOf="@id/editingOrigContent"
+        app:layout_constraintEnd_toStartOf="@id/editingTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/editingTitle"
+        app:srcCompat="@drawable/ic_baseline_edit_24"
+        tools:ignore="ContentDescription,RtlSymmetry" />
+
+    <ImageButton
+        android:id="@+id/cancelEditingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/cancelEditingButton"
+        android:padding="@dimen/posts_margins"
+        android:src="@drawable/ic_baseline_cancel_24"
+        app:layout_constraintBottom_toBottomOf="@id/editingOrigContent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/editingTitle"
+        app:layout_constraintTop_toTopOf="@id/editingTitle" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/editOrigGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="editingTitle,editPostIcon,editingOrigContent,cancelEditingButton" />
+
+    <EditText
+        android:id="@+id/postContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/postContent"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/submitButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editingOrigContent" />
+
+    <ImageButton
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/send_button"
+        android:padding="@dimen/posts_margins"
+        android:src="@drawable/submit_24"
+        app:layout_constraintBottom_toBottomOf="@+id/postContent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/postContent"
+        app:layout_constraintTop_toTopOf="@+id/postContent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
