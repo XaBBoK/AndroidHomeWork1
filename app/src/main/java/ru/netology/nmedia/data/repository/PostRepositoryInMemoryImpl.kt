@@ -58,7 +58,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
         if (post.id == NON_EXISTING_POST_ID) {
             posts = posts + listOf<Post>(
                 Post(
-                    id = posts.maxOf { it.id } + 1,
+                    id = (posts.maxOfOrNull { it.id }?.plus(1)) ?: 0,
                     author = "him",
                     content = post.content,
                     published = Date().toString(),
