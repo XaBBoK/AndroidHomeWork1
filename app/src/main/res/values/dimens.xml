@@ -5,4 +5,5 @@
     <dimen name="posts_margin_between_buttons">8dp</dimen>
     <dimen name="horizontal_divider_padding">5dp</dimen>
     <dimen name="vertical_divider_padding">2dp</dimen>
+    <dimen name="textbutton_min_width_height">8dp</dimen>
 </resources>
