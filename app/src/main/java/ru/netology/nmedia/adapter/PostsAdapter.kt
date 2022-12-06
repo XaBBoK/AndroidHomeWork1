@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.formatNumber
@@ -43,9 +42,11 @@ class PostViewHolder(
             author.text = post.author
             published.text = post.published
             content.text = post.content
-            heartIcon.setImageResource(if (post.likedByMe) R.drawable.ic_baseline_favorite_red_24 else R.drawable.ic_baseline_favorite_border_24)
-            likes.text = formatNumber(post.likes)
-            shares.text = formatNumber(post.shares)
+            heartIcon.isChecked = post.likedByMe
+            heartIcon.text = formatNumber(post.likes)
+            //heartIcon.setImageResource(if (post.likedByMe) R.drawable.ic_baseline_favorite_red_24 else R.drawable.ic_baseline_favorite_border_24)
+            //likes.text = formatNumber(post.likes)
+            shareButton.text = formatNumber(post.shares)
         }
 
         binding.apply {

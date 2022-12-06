@@ -41,14 +41,14 @@
         app:layout_constraintTop_toBottomOf="@id/author"
         tools:text="@sample/posts.json/data/published" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/more"
+        style="@style/Widget.AppTheme.MenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
         android:contentDescription="@string/post_more_menu"
         android:padding="@dimen/posts_margins"
-        android:src="@drawable/ic_baseline_more_vert_24"
+
         app:layout_constraintBottom_toBottomOf="@id/published"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/author"
@@ -79,48 +79,32 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="content" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/heart_icon"
+        style="@style/Widget.AppTheme.LikeCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/posts_margin_between_buttons"
-        android:background="@android:color/transparent"
+        android:checkable="true"
         android:contentDescription="@string/like_button"
-        android:src="@drawable/ic_baseline_favorite_border_24"
         app:layout_constraintBottom_toBottomOf="@id/barrierAfterButtons"
-        app:layout_constraintTop_toBottomOf="@id/barrierAfterContent" />
-
-    <TextView
-        android:id="@+id/likes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/posts_margin_between_buttons"
-        app:layout_constraintBottom_toBottomOf="@id/barrierAfterButtons"
-        app:layout_constraintStart_toEndOf="@id/heart_icon"
-        app:layout_constraintTop_toTopOf="@id/barrierAfterContent"
+        app:layout_constraintTop_toBottomOf="@id/barrierAfterContent"
+        tools:checked="@sample/posts.json/data/likedByMe"
         tools:text="@sample/posts.json/data/likes" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/share_button"
+        style="@style/Widget.AppTheme.ShareCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/posts_margins"
-        android:background="@android:color/transparent"
         android:contentDescription="@string/share"
-        android:src="@drawable/ic_baseline_share_24"
-        app:layout_constraintBottom_toBottomOf="@id/barrierAfterButtons"
-        app:layout_constraintStart_toEndOf="@id/likes"
-        app:layout_constraintTop_toTopOf="@id/barrierAfterContent" />
 
-    <TextView
-        android:id="@+id/shares"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/posts_margin_between_buttons"
         app:layout_constraintBottom_toBottomOf="@id/barrierAfterButtons"
-        app:layout_constraintStart_toEndOf="@id/share_button"
+        app:layout_constraintStart_toEndOf="@id/heart_icon"
         app:layout_constraintTop_toTopOf="@id/barrierAfterContent"
         tools:text="@sample/posts.json/data/shares" />
+
 
     <ImageButton
         android:id="@+id/views_button"
@@ -145,12 +129,11 @@
         tools:text="@sample/posts.json/data/views" />
 
     <androidx.constraintlayout.widget.Barrier
-
         android:id="@+id/barrierAfterButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="heart_icon,likes" />
+        app:constraint_referenced_ids="heart_icon,share_button" />
 
     <ImageView
         android:layout_width="match_parent"
