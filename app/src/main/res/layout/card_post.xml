@@ -75,7 +75,7 @@
     <ImageView
         android:id="@+id/videoPreview"
         android:layout_width="match_parent"
-        android:layout_height="312dp"
+        android:layout_height="208dp"
         android:src="@drawable/illustration_image"
         app:layout_constraintTop_toBottomOf="@+id/content"
         app:layout_constraintBottom_toTopOf="@+id/barrierAfterContent"
