@@ -3,10 +3,12 @@ package ru.netology.nmedia.presentation
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
+import ru.netology.nmedia.presentation.ResultContracts.EditOrNewPostResultContract
 import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
 import ru.netology.nmedia.data.repository.PostRepositoryInMemoryImpl
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
@@ -16,14 +18,13 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: PostViewModel by lazy {
-        ViewModelProvider(
-            this, PostViewModel.Factory(PostRepositoryInMemoryImpl())
-        ).get(PostViewModel::class.java)
+    private val viewModel: PostViewModel by viewModels {
+        PostViewModel.Factory(this, PostRepositoryInMemoryImpl())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -49,13 +50,25 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        val editOrNewPostLauncher: ActivityResultLauncher<Post> =
+            registerForActivityResult(EditOrNewPostResultContract()) { post ->
+                post?.let {
+                    viewModel.addOrEditPost(it)
+                }
+            }
+
+        binding.submitButton.setOnLongClickListener {
+            editOrNewPostLauncher.launch(Post())
+            true
+        }
+
         binding.cancelEditingButton.setOnClickListener {
             viewModel.cancelEditPost()
         }
     }
 
     private fun subscribe() {
-        val adapter = PostsAdapter(OnPostInteractionListenerImpl(viewModel))
+        val adapter = PostsAdapter(OnPostInteractionListenerImpl(viewModel, this))
         binding.postList.adapter = adapter
         viewModel.data.observe(this) { posts ->
             adapter.submitList(posts)
