@@ -13,4 +13,7 @@
     <string name="send_button">Кнопка отправить</string>
     <string name="editPostMenuElement">Редактировать</string>
     <string name="removePostMenuElement">Удалить</string>
+    <string name="video_preview">Предпросмотр видео</string>
+    <string name="video_preview_button">Кнопка запуска видео</string>
+    <string name="save_post_content">Сохранить содержимое сообщения</string>
 </resources>
