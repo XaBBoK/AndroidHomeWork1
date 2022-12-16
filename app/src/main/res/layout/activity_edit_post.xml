@@ -27,17 +27,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="100dp">
+            android:layout_marginBottom="100dp"
+            android:fillViewport="true"
+            >
 
 
             <EditText
                 android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="top"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:text="@={viewModel.content}"
-                tools:text="SOME\nPOST\nTEXT123321" />
+                tools:text="SOME\nPOST\nTEXT123321"
+                android:background="@null"
+                android:scrollbars="vertical"
+/>
 
         </androidx.core.widget.NestedScrollView>
 
