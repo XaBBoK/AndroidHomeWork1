@@ -20,7 +20,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
             likes = 999,
             shares = 2999,
         )
-    }
+    }.onEach { if (it.id == 2L) it.video = "https://www.youtube.com/watch?v=WhWc3b3KhnY" }
 
 
     private val data = MutableLiveData(posts)
@@ -47,6 +47,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
         }
 
         data.value = posts
+
+
     }
 
     override fun removeById(id: Long) {
