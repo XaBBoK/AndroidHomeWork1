@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NMedia</string>
     <string name="textViewContent">NMedia!</string>
-    <string name="posts_author_avatar" >Avatar</string>
+    <string name="posts_author_avatar">Avatar</string>
     <string name="post_more_menu">More</string>
     <string name="like_button">Like</string>
     <string name="share">Share</string>
@@ -12,4 +12,7 @@
     <string name="send_button">Send button</string>
     <string name="editPostMenuElement">Edit</string>
     <string name="removePostMenuElement">Remove</string>
+    <string name="video_preview">Video preview</string>
+    <string name="video_preview_button">Play video button</string>
+    <string name="save_post_content">Save post content</string>
 </resources>

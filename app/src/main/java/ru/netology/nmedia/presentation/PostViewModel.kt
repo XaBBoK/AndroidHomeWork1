@@ -1,15 +1,17 @@
 package ru.netology.nmedia.presentation
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import android.os.Bundle
+import androidx.lifecycle.*
+import androidx.savedstate.SavedStateRegistryOwner
 import ru.netology.nmedia.domain.repository.PostRepository
 import ru.netology.nmedia.dto.Post
 
-class PostViewModel(private val repository: PostRepository) : ViewModel() {
-    val data = repository.getAll()
+class PostViewModel(
+    private val repository: PostRepository,
+    private val savedStateHandler: SavedStateHandle
+) : ViewModel() {
+    val data: LiveData<List<Post>> = repository.getAll()
     val edited: MutableLiveData<Post?> = MutableLiveData()
-
 
     /*fun like() = repository.like()
     fun share() = repository.share()*/
@@ -33,8 +35,24 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
         edited.value = null
     }
 
+    class Factory(
+        owner: SavedStateRegistryOwner,
+        private val repo: PostRepository,
+        defaultArgs: Bundle? = null
 
-    class Factory(private val repo: PostRepository) : ViewModelProvider.Factory {
+    ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+        override fun <T : ViewModel> create(
+            key: String,
+            modelClass: Class<T>,
+            handle: SavedStateHandle
+        ): T {
+            @Suppress("UNCHECKED_CAST")
+            return PostViewModel(repository = repo, savedStateHandler = handle) as T
+        }
+    }
+
+
+    /*class _Factory(private val repo: PostRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(PostViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
@@ -42,5 +60,5 @@ class PostViewModel(private val repository: PostRepository) : ViewModel() {
             }
             throw IllegalArgumentException("Wrong view-model in Factory")
         }
-    }
+    }*/
 }

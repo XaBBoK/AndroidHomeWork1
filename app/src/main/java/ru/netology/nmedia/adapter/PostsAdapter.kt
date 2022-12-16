@@ -2,6 +2,8 @@ package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,8 +14,9 @@ import ru.netology.nmedia.utils.formatNumber
 
 interface OnPostInteractionListener {
     fun onLike(post: Post)
-    fun onShare(post: Post)
+    fun onShare(post: Post, view: View)
     fun onMore(post: Post, view: View)
+    fun onVideo(post: Post, view: View)
 }
 
 class PostsAdapter(
@@ -47,6 +50,7 @@ class PostViewHolder(
             //heartIcon.setImageResource(if (post.likedByMe) R.drawable.ic_baseline_favorite_red_24 else R.drawable.ic_baseline_favorite_border_24)
             //likes.text = formatNumber(post.likes)
             shareButton.text = formatNumber(post.shares)
+            postVideoGroup.visibility = if (post.video.isNotEmpty()) VISIBLE else GONE
         }
 
         binding.apply {
@@ -55,13 +59,16 @@ class PostViewHolder(
             }
 
             shareButton.setOnClickListener {
-                onInteractionListener.onShare(post)
+                onInteractionListener.onShare(post, it)
             }
 
             more.setOnClickListener {
                 onInteractionListener.onMore(post, it)
             }
 
+            videoPreview.setOnClickListener {
+                onInteractionListener.onVideo(post, it)
+            }
         }
     }
 }
