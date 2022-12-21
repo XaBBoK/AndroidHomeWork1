@@ -13,8 +13,8 @@ class EditPostActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditPostBinding
 
-    private val viewModel: PostEditViewModel by viewModels {
-        PostEditViewModel.Factory(
+    private val viewModel: EditPostViewModel by viewModels {
+        EditPostViewModel.Factory(
             this, post = this.intent.getParcelableExtra(
                 INTENT_EXTRA_POST
             ) ?: Post()

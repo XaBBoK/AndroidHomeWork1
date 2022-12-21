@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="ru.netology.nmedia.presentation.PostEditViewModel" />
+            type="ru.netology.nmedia.presentation.EditPostViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

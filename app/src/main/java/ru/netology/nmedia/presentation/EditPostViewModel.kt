@@ -9,7 +9,7 @@ import ru.netology.nmedia.dto.Post
 
 private const val POST_LIVE_DATA_SAVED_STATE_IDENTIFICATION = "POST_LIVE_DATA_SAVED_STATE"
 
-class PostEditViewModel(post: Post, private val savedStateHandler: SavedStateHandle) : ViewModel() {
+class EditPostViewModel(post: Post, private val savedStateHandler: SavedStateHandle) : ViewModel() {
     val data = savedStateHandler.getLiveData(POST_LIVE_DATA_SAVED_STATE_IDENTIFICATION, post)
 
     var content: String
@@ -32,7 +32,7 @@ class PostEditViewModel(post: Post, private val savedStateHandler: SavedStateHan
             handle: SavedStateHandle
         ): T {
             @Suppress("UNCHECKED_CAST")
-            return PostEditViewModel(post = post, savedStateHandler = handle) as T
+            return EditPostViewModel(post = post, savedStateHandler = handle) as T
         }
     }
 
