@@ -1,7 +1,7 @@
 package ru.netology.nmedia.data.repository
 
-import android.app.Application
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +13,8 @@ import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
 import java.util.*
 
-class PostRepositoryFileImpl(private val context: Context) : PostRepository {
+class PostRepositoryFileImpl(private val context: Context) :
+    PostRepository {
     private val gson = Gson()
     private val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
     private val filename = "posts.json"
@@ -24,7 +25,7 @@ class PostRepositoryFileImpl(private val context: Context) : PostRepository {
     private val defaultPosts = List(5) {
         Post(
             id = ++nextId,
-            author = "Нетология ${nextId.toLong()}. Университет интернет-профессий будущего",
+            author = "Нетология ${nextId}. Университет интернет-профессий будущего",
             content = "Знаний хватит на всех: на следующей неделе разбираемся с чем-то еще",
             published = "15 окт в 15:28",
             likedByMe = false,
@@ -34,31 +35,40 @@ class PostRepositoryFileImpl(private val context: Context) : PostRepository {
     }.onEach { if (it.id == 2L) it.video = "https://www.youtube.com/watch?v=WhWc3b3KhnY" }
 
     init {
-        val file = context.filesDir.resolve(filename)
-        if (file.exists()) {
+        try {
+            val file = context.filesDir.resolve(filename)
             file.bufferedReader().use {
-                Toast.makeText(context, "Loaded posts from file!", Toast.LENGTH_LONG).show()
                 posts = gson.fromJson(it, type)
             }
-        } else {
+        } catch (e: Exception) {
+            Log.w(
+                "Settings", "Error while loading file [${filename}]: ${e.message}" +
+                        "\nLoading default settings from DEMO posts!"
+            )
             Toast.makeText(context, "Loaded default DEMO posts!", Toast.LENGTH_LONG).show()
             posts = defaultPosts
         }
 
         nextId = posts.maxOf { it.id }.plus(1)
         data.value = posts
+
+        sync()
     }
 
 
     private fun sync() {
-        val file = context.filesDir.resolve(filename)
-        file.bufferedWriter().use {
-            it.write(gson.toJson(posts))
+        try {
+            val file = context.filesDir.resolve(filename)
+            file.bufferedWriter().use {
+                it.write(gson.toJson(posts))
+            }
+        } catch (e: Exception) {
+            Log.e("Settings", "Error while saving file [${filename}]: ${e.message}")
+            Toast.makeText(context, "Error while saving settings", Toast.LENGTH_LONG)
+                .show()
         }
     }
 
-
-//private val data = MutableLiveData(posts)
 
     override fun getAll(): LiveData<List<Post>> {
         return Transformations.map(data) { input -> input.sortedByDescending { it.id } }
