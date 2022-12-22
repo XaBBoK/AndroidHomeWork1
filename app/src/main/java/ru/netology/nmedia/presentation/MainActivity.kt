@@ -6,12 +6,12 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import ru.netology.nmedia.presentation.ResultContracts.EditOrNewPostResultContract
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
-import ru.netology.nmedia.data.repository.PostRepositoryInMemoryImpl
+import ru.netology.nmedia.data.repository.PostRepositoryFileImpl
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.presentation.ResultContracts.EditOrNewPostResultContract
 import ru.netology.nmedia.utils.hideKeyboard
 import java.util.*
 
@@ -19,7 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val viewModel: PostViewModel by viewModels {
-        PostViewModel.Factory(this, PostRepositoryInMemoryImpl())
+        //PostViewModel.Factory(this, PostRepositoryInMemoryImpl())
+        PostViewModel.Factory(this, PostRepositoryFileImpl(this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
