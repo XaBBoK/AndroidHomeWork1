@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import ru.netology.nmedia.R
 import ru.netology.nmedia.domain.repository.PostRepository
 import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
@@ -64,7 +65,11 @@ class PostRepositoryFileImpl(private val context: Context) :
             }
         } catch (e: Exception) {
             Log.e("Settings", "Error while saving file [${filename}]: ${e.message}")
-            Toast.makeText(context, "Error while saving settings", Toast.LENGTH_LONG)
+            Toast.makeText(
+                context,
+                context.getString(R.string.settings_save_error_message),
+                Toast.LENGTH_LONG
+            )
                 .show()
         }
     }
