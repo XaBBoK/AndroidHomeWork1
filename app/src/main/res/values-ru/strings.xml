@@ -16,4 +16,5 @@
     <string name="video_preview">Предпросмотр видео</string>
     <string name="video_preview_button">Кнопка запуска видео</string>
     <string name="save_post_content">Сохранить содержимое сообщения</string>
+    <string name="settings_save_error_message">Ошибка при сохранении настроек</string>
 </resources>
