@@ -6,4 +6,5 @@
     <dimen name="horizontal_divider_padding">5dp</dimen>
     <dimen name="vertical_divider_padding">2dp</dimen>
     <dimen name="textbutton_min_width_height">8dp</dimen>
+    <integer name="post_max_lines">6</integer>
 </resources>

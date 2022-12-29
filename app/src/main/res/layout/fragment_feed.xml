@@ -13,7 +13,7 @@
 
         app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".presentation.MainActivity">
+        tools:context=".presentation.fragments.FeedFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/postList"

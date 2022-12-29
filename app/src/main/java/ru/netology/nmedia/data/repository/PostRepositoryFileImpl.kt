@@ -50,7 +50,7 @@ class PostRepositoryFileImpl(private val context: Context) :
             posts = defaultPosts
         }
 
-        nextId = posts.maxOf { it.id }.plus(1)
+        nextId = posts.maxOfOrNull { it.id }?.plus(1) ?: 0
         data.value = posts
 
         sync()

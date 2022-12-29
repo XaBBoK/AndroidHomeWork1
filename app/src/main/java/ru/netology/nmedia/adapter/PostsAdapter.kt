@@ -1,23 +1,16 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ru.netology.nmedia.data.repository.OnPostInteractionListener
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.formatNumber
-
-interface OnPostInteractionListener {
-    fun onLike(post: Post)
-    fun onShare(post: Post, view: View)
-    fun onMore(post: Post, view: View)
-    fun onVideo(post: Post, view: View)
-}
 
 class PostsAdapter(
     private val onInteractionListener: OnPostInteractionListener
@@ -68,6 +61,10 @@ class PostViewHolder(
 
             videoPreview.setOnClickListener {
                 onInteractionListener.onVideo(post, it)
+            }
+
+            root.setOnClickListener {
+                onInteractionListener.onPostDetails(post)
             }
         }
     }
