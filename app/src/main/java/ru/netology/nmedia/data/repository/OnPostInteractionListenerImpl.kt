@@ -5,40 +5,34 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
-import ru.netology.nmedia.presentation.ResultContracts.EditOrNewPostResultContract
-import ru.netology.nmedia.adapter.OnPostInteractionListener
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
+import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_POST
+
 
 class OnPostInteractionListenerImpl(
     private val viewModel: PostViewModel,
-    activity: AppCompatActivity
+    private val fragment: Fragment
 ) :
     OnPostInteractionListener {
-    private val editOrNewPostLauncher =
-        activity.registerForActivityResult(EditOrNewPostResultContract()) { post ->
-            post
-                ?.let {
-                    viewModel.addOrEditPost(
-                        it
-                    )
-                }
-                ?: Toast.makeText(activity, "Текст пустой!", Toast.LENGTH_LONG).show()
-        }
-
 
     override fun onLike(post: Post) {
         viewModel.likeById(post.id)
     }
 
-    override fun onShare(post: Post, view: View) {
-        //viewModel.shareById(post.id)
-        //val content = posts.find { it.id == id }?.content ?: return
+    override fun onEdit(post: Post) {
+        fragment.findNavController().navigate(
+            R.id.action_global_editPostFragment,
+            bundleOf(Pair(INTENT_EXTRA_POST, post))
+        )
+    }
 
+    override fun onShare(post: Post, view: View) {
         val intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, post.content)
@@ -59,10 +53,7 @@ class OnPostInteractionListenerImpl(
                     true
                 }
                 R.id.editPost -> {
-                    //viewModel.editPost(post)
-
-                    editOrNewPostLauncher.launch(post)
-
+                    onEdit(post)
                     true
                 }
                 else -> {
@@ -85,6 +76,13 @@ class OnPostInteractionListenerImpl(
             )
         }
 
+    }
+
+    override fun onPostDetails(post: Post) {
+        fragment.findNavController().navigate(
+            R.id.feedFragmentToPostDetailsFragment,
+            bundleOf(Pair(INTENT_EXTRA_POST, post))
+        )
     }
 
 
