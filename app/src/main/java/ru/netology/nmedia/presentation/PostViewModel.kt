@@ -12,6 +12,7 @@ class PostViewModel(
 ) : ViewModel() {
     val data: LiveData<List<Post>> = repository.getAll()
     val edited: MutableLiveData<Post?> = MutableLiveData()
+    var draft: String? = null
 
     /*fun like() = repository.like()
     fun share() = repository.share()*/
