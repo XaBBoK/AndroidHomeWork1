@@ -16,3 +16,8 @@ data class Post(
     var shares: Int = 0,
     var video: String = ""
 ) : Parcelable
+
+fun Post.isNewPost(): Post? {
+    return if (this.id == NON_EXISTING_POST_ID) this else null
+}
+

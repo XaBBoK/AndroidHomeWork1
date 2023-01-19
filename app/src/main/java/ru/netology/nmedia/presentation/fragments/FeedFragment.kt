@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
-import ru.netology.nmedia.data.repository.PostRepositoryFileImpl
+import ru.netology.nmedia.data.repository.PostRepositorySQLiteImpl
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
@@ -22,7 +22,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
-        factoryProducer = { PostViewModel.Factory(this, PostRepositoryFileImpl(requireContext())) }
+        factoryProducer = { PostViewModel.Factory(this, PostRepositorySQLiteImpl(requireContext())) }
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
