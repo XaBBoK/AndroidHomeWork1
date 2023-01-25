@@ -31,7 +31,7 @@ class PostRepositoryFileImpl(private val context: Context) :
             published = "15 окт в 15:28",
             likedByMe = false,
             likes = 999,
-            shares = 2999,
+            shares = 2999
         )
     }.onEach { if (it.id == 2L) it.video = "https://www.youtube.com/watch?v=WhWc3b3KhnY" }
 
