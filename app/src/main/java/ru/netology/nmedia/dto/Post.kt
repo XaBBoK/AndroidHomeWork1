@@ -3,7 +3,7 @@ package ru.netology.nmedia.dto
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-const val NON_EXISTING_POST_ID = -1L
+const val NON_EXISTING_POST_ID = 0L
 
 @Parcelize
 data class Post(
