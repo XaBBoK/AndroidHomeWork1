@@ -17,4 +17,7 @@
     <string name="video_preview_button">Кнопка запуска видео</string>
     <string name="save_post_content">Сохранить содержимое сообщения</string>
     <string name="settings_save_error_message">Ошибка при сохранении настроек</string>
+    <string name="channel_remote_name">Сообщения</string>
+    <string name="channel_remote_description">Канал сообщений</string>
+    <string name="notification_user_liked">%1$s поставил лайк посту %2$s</string>
 </resources>
