@@ -48,7 +48,7 @@ class FCMService : FirebaseMessagingService() {
                         )
                     )
                 }
-            } catch (e: IllegalArgumentException) {
+            } catch (e: java.lang.Exception) {
                 e.message?.apply {
                     Log.e("FirebaseMessages", this)
                 }
@@ -63,10 +63,11 @@ class FCMService : FirebaseMessagingService() {
             .setContentTitle(
                 getString(
                     R.string.notification_user_liked,
-                    content.userName,
                     content.postAuthor
                 )
             )
+            .setContentText(content.text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(content.text))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
@@ -87,5 +88,6 @@ data class Like(
     val userId: Long,
     val userName: String,
     val postId: Long,
-    val postAuthor: String
+    val postAuthor: String,
+    val text: String
 )
