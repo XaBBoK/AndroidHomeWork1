@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -38,8 +39,19 @@ class FCMService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         message.data[action]?.let {
-            when (Action.valueOf(it)) {
-                Action.LIKE -> handleLike(gson.fromJson(message.data[content], Like::class.java))
+            try {
+                when (Action.valueOf(it)) {
+                    Action.LIKE -> handleLike(
+                        gson.fromJson(
+                            message.data[content],
+                            Like::class.java
+                        )
+                    )
+                }
+            } catch (e: IllegalArgumentException) {
+                e.message?.apply {
+                    Log.e("FirebaseMessages", this)
+                }
             }
         }
     }
@@ -48,7 +60,13 @@ class FCMService : FirebaseMessagingService() {
     private fun handleLike(content: Like) {
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(getString(R.string.notification_user_liked, content.userName, content.postAuthor))
+            .setContentTitle(
+                getString(
+                    R.string.notification_user_liked,
+                    content.userName,
+                    content.postAuthor
+                )
+            )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
