@@ -18,5 +18,5 @@
     <string name="settings_save_error_message">Error while saving settings</string>
     <string name="channel_remote_name">Messages</string>
     <string name="channel_remote_description">Channel for messages</string>
-    <string name="notification_user_liked">%1$s liked %2$s post</string>
+    <string name="notification_user_liked">%1$s published new post:</string>
 </resources>
