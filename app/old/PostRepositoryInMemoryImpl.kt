@@ -1,4 +1,4 @@
-package ru.netology.nmedia.data.repository
+package ru.netology.nmedia.data.repository.old
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,10 +23,13 @@ class PostRepositoryInMemoryImpl : PostRepository {
     }.onEach { if (it.id == 2L) it.video = "https://www.youtube.com/watch?v=WhWc3b3KhnY" }
 
 
-    private val data = MutableLiveData(posts)
+    private val _data = MutableLiveData(emptyList<Post>())
 
-    override fun getAll(): LiveData<List<Post>> {
-        return Transformations.map(data) { input -> input.sortedByDescending { it.id } }
+    val data: LiveData<List<Post>>
+        get() = _data
+
+    override fun getAll() {
+        _data.value =  Transformations.map(data) { input -> input.sortedByDescending { it.id } }.value
     }
 
     override fun likeById(id: Long) {
@@ -37,7 +40,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
             else it
         }
 
-        data.value = posts
+        _data.value = posts
     }
 
     override fun shareById(id: Long) {
@@ -46,14 +49,14 @@ class PostRepositoryInMemoryImpl : PostRepository {
             else it
         }
 
-        data.value = posts
+        _data.value = posts
 
 
     }
 
     override fun removeById(id: Long) {
         posts = posts.filter { it.id != id }
-        data.value = posts
+        _data.value = posts
     }
 
     override fun addOrEditPost(post: Post) {
@@ -69,7 +72,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
                     shares = 0
                 )
             )
-            data.value = posts
+            _data.value = posts
         } else {
             posts = posts.map {
                 if (it.id == post.id)
@@ -78,7 +81,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
                     it
             }
         }
-        data.value = posts
+        _data.value = posts
 
 
     }

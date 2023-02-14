@@ -29,6 +29,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders.usesCleartextTraffic = true
+        }
+        debug {
+            manifestPlaceholders.usesCleartextTraffic = true
         }
     }
     compileOptions {
@@ -62,7 +66,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.6.1"
     implementation "androidx.fragment:fragment-ktx:1.5.5"
 
-    implementation "com.google.code.gson:gson:2.9.0"
+    implementation "com.google.code.gson:gson:2.10"
 
     def nav_version = "2.5.3"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -76,4 +80,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx:23.1.1'
 
     implementation 'com.google.android.gms:play-services-base:18.1.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

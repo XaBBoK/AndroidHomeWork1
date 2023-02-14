@@ -20,4 +20,9 @@
     <string name="channel_remote_name">Сообщения</string>
     <string name="channel_remote_description">Канал сообщений</string>
     <string name="notification_user_liked">%1$s опубликовал новый пост:</string>
+    <string name="SNACKBAR_ERROR">Произошла ошибка:</string>
+    <string name="error_loading">Ошибка загрузки</string>
+    <string name="retry_loading">Повторить загрузку</string>
+    <string name="empty_posts">Ваше сообщение будет первым!</string>
+    <string name="sendming_message_toast">Отправляем сообщение …</string>
 </resources>

@@ -10,14 +10,29 @@ data class Post(
     val id: Long = NON_EXISTING_POST_ID,
     val author: String = "",
     val content: String = "",
-    val published: String = "",
+    val published: Long = 0L,
     var likedByMe: Boolean = false,
     var likes: Int = 0,
     var shares: Int = 0,
     var video: String = ""
-) : Parcelable
+) : Parcelable {
 
-fun Post.isNewPost(): Post? {
-    return if (this.id == NON_EXISTING_POST_ID) this else null
+    fun isNewPost(): Post? {
+        return if (this.id == NON_EXISTING_POST_ID) this else null
+    }
+
+    companion object {
+        fun fromDto(dto: Post): PostEntity {
+            dto.apply {
+                return PostEntity(id, author, content, published, likedByMe, likes, shares, video)
+            }
+        }
+
+        fun toDto(entity: PostEntity) : Post {
+            entity.apply {
+                return Post(id, author, content, published, likedByMe, likes, shares, video)
+            }
+        }
+    }
+
 }
-
