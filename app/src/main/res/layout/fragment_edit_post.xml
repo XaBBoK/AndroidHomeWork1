@@ -64,7 +64,9 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/save_post_content"
             app:layout_anchor="@id/bottomAppBar"
-            app:srcCompat="@drawable/ic_check_24" />
+            app:srcCompat="@drawable/ic_check_24"
+            android:tint="@color/post_submit_tint"
+            />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
