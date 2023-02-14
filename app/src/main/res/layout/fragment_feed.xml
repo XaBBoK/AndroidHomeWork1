@@ -15,12 +15,29 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".presentation.fragments.FeedFragment">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/postList"
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/postListSwipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/card_post" />
+            android:layout_height="wrap_content">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/postList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/card_post" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <View
+            android:id="@+id/clickPreventer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/tint_color_highlight"
+            android:clickable="true"
+            tools:ignore="KeyboardInaccessibleWidget"
+            android:visibility="gone"/>
 
     </FrameLayout>
 
