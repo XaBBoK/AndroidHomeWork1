@@ -1,14 +1,15 @@
 package ru.netology.nmedia.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.dto.isNewPost
 import ru.netology.nmedia.presentation.EditPostViewModel
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.utils.viewBinding
@@ -58,6 +59,10 @@ class FragmentEditPost : Fragment(R.layout.fragment_edit_post) {
                 viewModel.draft = it.content
             }
         }
+
+        viewModel.fragmentEditPostEdited.observe(viewLifecycleOwner) {
+            findNavController().navigateUp()
+        }
     }
 
 
@@ -69,10 +74,17 @@ class FragmentEditPost : Fragment(R.layout.fragment_edit_post) {
                     viewModel.draft = null
                 }
 
-                viewModel.addOrEditPost(post)
-            }
+                try {
+                    binding.ok.isEnabled = false
+                    Toast.makeText(requireContext(), getString(R.string.sendming_message_toast), Toast.LENGTH_SHORT)
+                        .show()
 
-            findNavController().navigateUp()
+                    viewModel.addOrEditPost(post)
+                } catch (e: Exception) {
+                    binding.ok.isEnabled = true
+                    Log.e("addOrEditPost", e.message.toString())
+                }
+            }
         }
 
         //обработка нажатия кнопки Назад
