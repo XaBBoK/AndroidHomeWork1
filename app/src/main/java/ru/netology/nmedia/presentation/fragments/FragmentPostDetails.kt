@@ -8,7 +8,9 @@ import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.presentation.PostViewModel
+import ru.netology.nmedia.utils.load
 import ru.netology.nmedia.utils.viewBinding
 
 
@@ -35,6 +37,19 @@ class FragmentPostDetails : Fragment(R.layout.fragment_post_details) {
             } else {
                 //выводим данные с "нового" поста
                 binding.post = p
+
+                binding.avatar.load(
+                    url = p.authorAvatar,
+                    placeholder = R.drawable.ic_avatar_placeholder
+                )
+
+                p.attachment?.takeIf { it.type == AttachmentType.IMAGE }?.let {
+                    binding.attachmentImage.load(
+                        url = it.url,
+                        placeholder = R.drawable.ic_loading_placeholder
+                    )
+                }
+
             }
         }
 

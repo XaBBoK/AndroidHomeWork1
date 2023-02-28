@@ -110,6 +110,22 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="videoPreview" />
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="182dp"
+        android:id="@+id/attachmentImage"
+        tools:srcCompat="@sample/posts.json/data/authorAvatar"
+        app:layout_constraintTop_toBottomOf="@id/barrierAfterContent"
+        app:layout_constraintBottom_toTopOf="@+id/barrierAfterAttachments"
+        tools:ignore="ContentDescription" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierAfterAttachments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="attachmentImage" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/heart_icon"
         style="@style/Widget.AppTheme.LikeCheckBox"
@@ -119,7 +135,7 @@
         android:checkable="true"
         android:contentDescription="@string/like_button"
         app:layout_constraintBottom_toBottomOf="@id/barrierAfterButtons"
-        app:layout_constraintTop_toBottomOf="@id/barrierAfterContent"
+        app:layout_constraintTop_toBottomOf="@id/barrierAfterAttachments"
         tools:checked="@sample/posts.json/data/likedByMe"
         tools:text="@sample/posts.json/data/likes" />
 
@@ -133,7 +149,7 @@
 
         app:layout_constraintBottom_toBottomOf="@id/barrierAfterButtons"
         app:layout_constraintStart_toEndOf="@id/heart_icon"
-        app:layout_constraintTop_toTopOf="@id/barrierAfterContent"
+        app:layout_constraintTop_toTopOf="@id/barrierAfterAttachments"
         tools:text="@sample/posts.json/data/shares" />
 
 
@@ -147,7 +163,7 @@
         android:src="@drawable/ic_baseline_eye_24"
         app:layout_constraintBottom_toBottomOf="@id/barrierAfterButtons"
         app:layout_constraintEnd_toStartOf="@id/views"
-        app:layout_constraintTop_toTopOf="@id/barrierAfterContent" />
+        app:layout_constraintTop_toTopOf="@id/barrierAfterAttachments" />
 
     <TextView
         android:id="@+id/views"
@@ -156,7 +172,7 @@
         android:layout_marginHorizontal="@dimen/posts_margin_between_buttons"
         app:layout_constraintBottom_toBottomOf="@id/barrierAfterButtons"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/barrierAfterContent"
+        app:layout_constraintTop_toTopOf="@id/barrierAfterAttachments"
         tools:text="@sample/posts.json/data/views" />
 
     <androidx.constraintlayout.widget.Barrier

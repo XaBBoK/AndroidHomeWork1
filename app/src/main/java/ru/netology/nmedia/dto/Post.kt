@@ -15,17 +15,21 @@ data class Post(
     var likes: Int = 0,
     var shares: Int = 0,
     var video: String = "",
-    val authorAvatar: String = ""
-) : Parcelable {
+    val authorAvatar: String = "",
+    var attachment: Attachment? = null,
+
+    ) : Parcelable {
 
     fun isNewPost(): Post? {
         return if (this.id == NON_EXISTING_POST_ID) this else null
     }
 
     fun withBaseUrl(baseUrl: String): Post {
-        return this.copy(authorAvatar = "${baseUrl}/avatars/${authorAvatar}")
+        return this.copy(
+            authorAvatar = "${baseUrl}/avatars/${authorAvatar}",
+            attachment = attachment?.copy(url = "${baseUrl}/images/${attachment?.url}")
+        )
     }
-
 
     companion object {
         fun fromDto(dto: Post): PostEntity {
@@ -42,6 +46,17 @@ data class Post(
     }
 }
 
-fun List<Post>.listWithBaseUrl(baseUrl: String) : List<Post> = this.map {
+@Parcelize
+data class Attachment(
+    val url: String,
+    val description: String?,
+    val type: AttachmentType,
+) : Parcelable
+
+enum class AttachmentType {
+    IMAGE
+}
+
+fun List<Post>.listWithBaseUrl(baseUrl: String): List<Post> = this.map {
     it.withBaseUrl(baseUrl)
 }
