@@ -14,12 +14,18 @@ data class Post(
     var likedByMe: Boolean = false,
     var likes: Int = 0,
     var shares: Int = 0,
-    var video: String = ""
+    var video: String = "",
+    val authorAvatar: String = ""
 ) : Parcelable {
 
     fun isNewPost(): Post? {
         return if (this.id == NON_EXISTING_POST_ID) this else null
     }
+
+    fun withBaseUrl(baseUrl: String): Post {
+        return this.copy(authorAvatar = "${baseUrl}/avatars/${authorAvatar}")
+    }
+
 
     companion object {
         fun fromDto(dto: Post): PostEntity {
@@ -28,11 +34,14 @@ data class Post(
             }
         }
 
-        fun toDto(entity: PostEntity) : Post {
+        fun toDto(entity: PostEntity): Post {
             entity.apply {
                 return Post(id, author, content, published, likedByMe, likes, shares, video)
             }
         }
     }
+}
 
+fun List<Post>.listWithBaseUrl(baseUrl: String) : List<Post> = this.map {
+    it.withBaseUrl(baseUrl)
 }
