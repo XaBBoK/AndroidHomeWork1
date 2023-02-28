@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.netology.nmedia.domain.repository.PostRepository
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.listWithBaseUrl
 import ru.netology.nmedia.utils.ifNotEmpty
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -46,8 +47,11 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
                     }
 
                     val data: List<Post>? = response.body?.string()?.let {
-                        gson.fromJson(it, typeToken.type)
+                        gson.fromJson<List<Post>?>(it, object : TypeToken<List<Post>>() {}.type)
+                            .listWithBaseUrl(BASE_URL)
                     }
+
+
 
                     data?.apply {
                         callback.onSuccess(this)
@@ -77,7 +81,8 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
 
                     val data: Post? = response.body?.string()
                         .let<String?, Post?> {
-                            gson.fromJson(it, object : TypeToken<Post>() {}.type)
+                            gson.fromJson<Post?>(it, object : TypeToken<Post>() {}.type)
+                                .withBaseUrl(BASE_URL)
                         }
 
                     data?.apply {
@@ -109,7 +114,8 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
 
                     val data: Post? = response.body?.string()
                         .let {
-                            gson.fromJson(it, object : TypeToken<Post>() {}.type)
+                            gson.fromJson<Post?>(it, object : TypeToken<Post>() {}.type)
+                                ?.withBaseUrl(BASE_URL)
                         }
 
                     data?.apply {
@@ -142,7 +148,8 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
 
                     val data: Post? = response.body?.string()
                         .let {
-                            gson.fromJson(it, object : TypeToken<Post>() {}.type)
+                            gson.fromJson<Post?>(it, object : TypeToken<Post>() {}.type)
+                                ?.withBaseUrl(BASE_URL)
                         }
 
                     data?.apply {
@@ -198,7 +205,8 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
 
                     val data: Post? = response.body?.string()
                         .let {
-                            gson.fromJson(it, object : TypeToken<Post>() {}.type)
+                            gson.fromJson<Post?>(it, object : TypeToken<Post>() {}.type)
+                                ?.withBaseUrl(BASE_URL)
                         }
 
                     data?.apply {
