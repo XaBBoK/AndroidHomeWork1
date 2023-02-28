@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ru.netology.nmedia.R
 import ru.netology.nmedia.data.repository.OnPostInteractionListener
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.formatNumber
+import ru.netology.nmedia.utils.load
 
 class PostsAdapter(
     private val onInteractionListener: OnPostInteractionListener
@@ -22,7 +24,7 @@ class PostsAdapter(
             ), onInteractionListener
         )
     }
-    
+
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
@@ -45,6 +47,10 @@ class PostViewHolder(
             //likes.text = formatNumber(post.likes)
             shareButton.text = formatNumber(post.shares)
             postVideoGroup.visibility = if (post.video.isNotEmpty()) VISIBLE else GONE
+            avatar.load(
+                url = post.authorAvatar,
+                placeholder = R.drawable.ic_avatar_placeholder
+            )
         }
 
         binding.apply {
@@ -75,6 +81,7 @@ class PostItemCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.id == newItem.id
     }
+
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem == newItem
     }
