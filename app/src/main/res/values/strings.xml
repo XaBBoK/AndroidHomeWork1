@@ -24,4 +24,5 @@
     <string name="retry_loading">Retry load</string>
     <string name="empty_posts">Nothing here</string>
     <string name="sendming_message_toast">Sending message …</string>
+    <string name="attachment_image">Attachment image</string>
 </resources>

@@ -25,4 +25,5 @@
     <string name="retry_loading">Повторить загрузку</string>
     <string name="empty_posts">Ваше сообщение будет первым!</string>
     <string name="sendming_message_toast">Отправляем сообщение …</string>
+    <string name="attachment_image">Приложение с изображением</string>
 </resources>

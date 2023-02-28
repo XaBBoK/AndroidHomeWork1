@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.data.repository.OnPostInteractionListener
 import ru.netology.nmedia.databinding.CardPostBinding
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.formatNumber
 import ru.netology.nmedia.utils.load
@@ -49,8 +50,19 @@ class PostViewHolder(
             postVideoGroup.visibility = if (post.video.isNotEmpty()) VISIBLE else GONE
             avatar.load(
                 url = post.authorAvatar,
-                placeholder = R.drawable.ic_avatar_placeholder
+                placeholder = R.drawable.ic_avatar_placeholder,
+                roundedCornersRadius = 36
             )
+
+            post.attachment?.takeIf { it.type == AttachmentType.IMAGE } ?.let {
+                attachmentImage.visibility = VISIBLE
+                attachmentImage.load(
+                    url = it.url,
+                    placeholder = R.drawable.ic_loading_placeholder
+                )
+            } ?: let {
+                attachmentImage.visibility = GONE
+            }
         }
 
         binding.apply {
