@@ -51,7 +51,7 @@ class PostViewHolder(
             avatar.load(
                 url = post.authorAvatar,
                 placeholder = R.drawable.ic_avatar_placeholder,
-                roundedCornersRadius = 36
+                //roundedCornersRadius = 36
             )
 
             post.attachment?.takeIf { it.type == AttachmentType.IMAGE } ?.let {

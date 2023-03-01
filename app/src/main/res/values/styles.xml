@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="AvatarImageView.Corner" parent="">
+        <item name="cornerSize">15%</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
 
     <style name="Widget.AppTheme.TextButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:minWidth">@dimen/textbutton_min_width_height</item>
