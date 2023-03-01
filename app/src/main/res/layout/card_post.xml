@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     tools:context=".presentation.fragments.FeedFragment">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/posts_avatar_size"
         android:layout_height="@dimen/posts_avatar_size"
@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toTopOf="@id/barrierTop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@sample/posts.json/data/authorAvatar" />
+        tools:srcCompat="@sample/posts.json/data/authorAvatar"
+        app:shapeAppearanceOverlay="@style/AvatarImageView.Corner"/>
 
     <TextView
         android:id="@+id/author"

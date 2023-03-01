@@ -40,7 +40,8 @@ class FragmentPostDetails : Fragment(R.layout.fragment_post_details) {
 
                 binding.avatar.load(
                     url = p.authorAvatar,
-                    placeholder = R.drawable.ic_avatar_placeholder
+                    placeholder = R.drawable.ic_avatar_placeholder,
+                    //roundedCornersRadius = 36
                 )
 
                 p.attachment?.takeIf { it.type == AttachmentType.IMAGE }?.let {
