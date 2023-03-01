@@ -45,16 +45,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="match_parent"
@@ -83,7 +73,6 @@
             android:id="@+id/clickPreventer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/tint_color_highlight"
             android:clickable="true"
             tools:ignore="KeyboardInaccessibleWidget"
             android:visibility="gone"/>
@@ -182,4 +171,15 @@
         app:layout_constraintStart_toEndOf="@id/postContent"
         app:layout_constraintTop_toTopOf="@+id/postContent"
         app:tint="@color/post_submit_tint" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
