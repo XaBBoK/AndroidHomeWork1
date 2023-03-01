@@ -105,7 +105,7 @@ class PostViewModel(
                     }
                 }.apply {
                     edited.postValue(null)
-                    changeState(ScreenState.Working())
+                    changeState(ScreenState.Working(moveRecyclerViewPointerToTop = (post.id == NON_EXISTING_POST_ID)))
                     _fragmentEditPostEdited.postValue(Unit)
                 }
             }

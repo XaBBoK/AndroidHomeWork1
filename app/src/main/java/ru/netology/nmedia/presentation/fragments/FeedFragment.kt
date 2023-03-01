@@ -102,7 +102,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     private fun showWorking(state: ScreenState.Working) {
         if (state.moveRecyclerViewPointerToTop) {
-            binding.postList.layoutManager?.scrollToPosition(-1)
+            binding.postList.layoutManager?.scrollToPosition(0)
+            viewModel.changeState(ScreenState.Working())
             //binding.postListSwipeRefresh.isRefreshing = false
         }
 
@@ -131,15 +132,13 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         adapter = PostsAdapter(OnPostInteractionListenerImpl(viewModel, this))
         binding.postList.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { posts ->
-            //сортировка вывода списка
             binding.postList.runWhenReady {
-                binding.postList.layoutManager?.scrollToPosition(0)
-                //binding.postListSwipeRefresh.isRefreshing = false
-
+                //показываем текст-заглушку при пустом списке
                 binding.emptyText.visibility =
                     if (viewModel.data.value?.size == 0) VISIBLE else GONE
             }
 
+            //сортировка вывода списка
             adapter.submitList(posts.sortedByDescending { it.published })
         }
 
