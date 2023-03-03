@@ -9,10 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.iid.internal.FirebaseInstanceIdInternal
 import com.google.firebase.messaging.FirebaseMessaging
 import ru.netology.nmedia.R
 import ru.netology.nmedia.dto.Post
@@ -27,13 +25,20 @@ class ActivityApp : AppCompatActivity(R.layout.activity_app) {
         handleIntent()
 
 
+
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
-            if(it.isComplete){
-                val firebaseToken = it.result.toString()
-                this.getPreferences(Context.MODE_PRIVATE).edit().putString("fbt", firebaseToken).apply();
-                println(firebaseToken)
+            try {
+                if (it.isComplete) {
+                    val firebaseToken = it.result.toString()
+                    this.getPreferences(Context.MODE_PRIVATE).edit().putString("fbt", firebaseToken)
+                        .apply()
+                    println(firebaseToken)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
+
     }
 
     private fun checkGoogleApiAvailability() {
