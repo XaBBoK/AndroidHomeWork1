@@ -29,7 +29,7 @@ class FragmentPostDetails : Fragment(R.layout.fragment_post_details) {
         )
 
         viewModel.data.observe(viewLifecycleOwner) { posts ->
-            val p = posts.firstOrNull { it.id == binding.post?.id }
+            val p = posts.firstOrNull { it.id == binding.post?.id }?.withBaseUrls()
 
             if (p == null) {
                 //в списке нет поста с нужным id, выходим
