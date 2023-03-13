@@ -49,12 +49,12 @@ class PostViewHolder(
             shareButton.text = formatNumber(post.shares)
             postVideoGroup.visibility = if (post.video.isNotEmpty()) VISIBLE else GONE
             avatar.load(
-                url = post.authorAvatar,
+                url = post.withBaseUrls().authorAvatar,
                 placeholder = R.drawable.ic_avatar_placeholder,
                 //roundedCornersRadius = 36
             )
 
-            post.attachment?.takeIf { it.type == AttachmentType.IMAGE } ?.let {
+            post.withBaseUrls().attachment?.takeIf { it.type == AttachmentType.IMAGE } ?.let {
                 attachmentImage.visibility = VISIBLE
                 attachmentImage.load(
                     url = it.url,

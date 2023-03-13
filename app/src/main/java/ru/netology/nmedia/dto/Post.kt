@@ -2,6 +2,7 @@ package ru.netology.nmedia.dto
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import ru.netology.nmedia.BuildConfig
 
 const val NON_EXISTING_POST_ID = 0L
 
@@ -24,10 +25,10 @@ data class Post(
         return if (this.id == NON_EXISTING_POST_ID) this else null
     }
 
-    fun withBaseUrl(baseUrl: String): Post {
+    fun withBaseUrls(): Post {
         return this.copy(
-            authorAvatar = "${baseUrl}/avatars/${authorAvatar}",
-            attachment = attachment?.copy(url = "${baseUrl}/images/${attachment?.url}")
+            authorAvatar = "${BuildConfig.BASE_URL_AVATARS}${authorAvatar}",
+            attachment = attachment?.copy(url = "${BuildConfig.BASE_URL_IMAGES}${attachment?.url}")
         )
     }
 
@@ -57,6 +58,6 @@ enum class AttachmentType {
     IMAGE
 }
 
-fun List<Post>.listWithBaseUrl(baseUrl: String): List<Post> = this.map {
-    it.withBaseUrl(baseUrl)
+fun List<Post>.listWithBaseUrls(): List<Post> = this.map {
+    it.withBaseUrls()
 }

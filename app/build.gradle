@@ -29,10 +29,20 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            manifestPlaceholders.usesCleartextTraffic = true
+            manifestPlaceholders.usesCleartextTraffic = false
+            buildConfigField "String", "BASE_URL", '"https://nmedia.kerokuapp.com/"'
+            buildConfigField "String", "BASE_URL_API", 'BASE_URL + "api/"'
         }
         debug {
             manifestPlaceholders.usesCleartextTraffic = true
+            buildConfigField "String", "BASE_URL", '"http://192.168.222.73:9999/"'
+            buildConfigField "String", "BASE_URL_API", 'BASE_URL + "api/slow/"'
+            //buildConfigField "String", "BASE_URL_API", 'BASE_URL + "api/"'
+
+        }
+        all {
+            buildConfigField "String", "BASE_URL_AVATARS", 'BASE_URL + "avatars/"'
+            buildConfigField "String", "BASE_URL_IMAGES", 'BASE_URL + "images/"'
         }
     }
     compileOptions {
@@ -82,8 +92,12 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:18.1.0'
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     implementation "com.github.bumptech.glide:glide:4.15.0"
     //implementation "com.squareup.picasso:picasso:2.71828"
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 }
