@@ -19,10 +19,11 @@
     <string name="channel_remote_name">Messages</string>
     <string name="channel_remote_description">Channel for messages</string>
     <string name="notification_user_liked">%1$s published new post:</string>
-    <string name="SNACKBAR_ERROR">An error has occurred:</string>
+    <string name="SNACKBAR_ERROR">Something went wrong, try again later</string>
     <string name="error_loading">Loading error</string>
     <string name="retry_loading">Retry load</string>
     <string name="empty_posts">Nothing here</string>
     <string name="sendming_message_toast">Sending message …</string>
     <string name="attachment_image">Attachment image</string>
+    <string name="repeat">Repeat</string>
 </resources>
