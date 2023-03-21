@@ -1,15 +1,13 @@
 package ru.netology.nmedia.presentation
 
-/*data class FeedModel(
-    val posts: List<Post> = emptyList(),
-    val loading: Boolean = false,
-    val error: Boolean = false,
-    val empty: Boolean = false,
-    val refreshing: Boolean = false
-)*/
+import ru.netology.nmedia.dto.Post
 
-sealed class ScreenState {
+data class FeedModel(
+    val posts: List<Post> = emptyList()
+)
+
+sealed class ScreenState() {
     object Loading : ScreenState()
-    class Error(val message: String, val needReload: Boolean = false) : ScreenState()
+    class Error(val message: String, val needReload: Boolean = false, val repeatText: String? = null, val repeatAction: ( () -> Unit)? = null)   : ScreenState()
     class Working(val moveRecyclerViewPointerToTop: Boolean = false) : ScreenState()
 }
