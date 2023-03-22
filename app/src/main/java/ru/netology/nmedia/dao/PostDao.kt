@@ -1,11 +1,7 @@
 package ru.netology.nmedia.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
-import ru.netology.nmedia.dto.Post
+import androidx.room.*
 import ru.netology.nmedia.dto.PostEntity
 
 @Dao
@@ -13,21 +9,43 @@ interface PostDao {
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
     fun getAll(): LiveData<List<PostEntity>>
 
-    @Insert
-    fun insert(post: PostEntity): Long
+    @Query("SELECT * FROM PostEntity WHERE id = :id")
+    suspend fun getById(id: Long) : PostEntity
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(post: PostEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(posts: List<PostEntity>): List<Long>
+
+    @Transaction
+    suspend fun clearAndInsert(posts: List<PostEntity>): List<Long> {
+        clearAll()
+        return insert(posts)
+    }
 
     @Query("UPDATE PostEntity SET content = :content WHERE id = :id")
-    fun updateContentById(id: Long, content: String)
+    suspend fun updateContentById(id: Long, content: String)
 
     @Query(
         """
             UPDATE PostEntity SET
-                likes = likes + CASE WHEN likedByMe THEN -1 ELSE 1 END,
-                likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
+                likes = likes + CASE WHEN likedByMe THEN 0 ELSE 1 END,
+                likedByMe = 1
             WHERE id = :id
         """
     )
-    fun likeById(id: Long)
+    suspend fun likeById(id: Long)
+
+    @Query(
+        """
+            UPDATE PostEntity SET
+                likes = likes - CASE WHEN likedByMe THEN 1 ELSE 0 END,
+                likedByMe = 0
+            WHERE id = :id
+        """
+    )
+    suspend fun unlikeById(id: Long)
 
     @Query(
         """
@@ -36,17 +54,15 @@ interface PostDao {
             WHERE id = :id;
         """
     )
-    fun shareById(id: Long)
+    suspend fun shareById(id: Long)
 
     @Query("DELETE FROM PostEntity WHERE id= :id")
-    fun removeById(id: Long)
+    suspend fun removeById(id: Long)
 
-    fun addOrEditPost(post: PostEntity): Post {
-        if (post.id == NON_EXISTING_POST_ID)
-            return PostEntity.toDto(post.copy(id = insert(post)))
-        else {
-            updateContentById(post.id, post.content)
-            return PostEntity.toDto(post)
-        }
+    suspend fun addOrEditPost(post: PostEntity) {
+        insert(post)
     }
+
+    @Query("DELETE FROM PostEntity")
+    suspend fun clearAll()
 }

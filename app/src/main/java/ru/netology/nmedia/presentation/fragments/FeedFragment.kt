@@ -29,6 +29,15 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     )
 
     private lateinit var adapter: PostsAdapter
+    private var scrollOnNextSubmit: Boolean = false
+        get() {
+            if (field) {
+                field = false
+                return true
+            }
+
+            return false
+        }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +74,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         }
 
         binding.postListSwipeRefresh.setOnRefreshListener {
-            binding.postListSwipeRefresh.isRefreshing = false
+            //binding.postListSwipeRefresh.isRefreshing = false
             viewModel.loadPosts()
         }
 
@@ -76,76 +85,98 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     }
 
     private fun showError(state: ScreenState.Error) {
-        if (!state.needReload) {
+        if (state.repeatAction == null) {
+
             Snackbar.make(
                 requireContext(),
-                requireView(),
-                getString(R.string.SNACKBAR_ERROR) + "\n" + state.message,
-                Snackbar.LENGTH_INDEFINITE
+                binding.snackBarCoordinator,
+                getString(R.string.SNACKBAR_ERROR),
+                Snackbar.LENGTH_LONG
             )
                 .setTextMaxLines(10)
                 .setAction("OK") {
 
                 }
                 .show()
-
-            viewModel.changeState(ScreenState.Working())
-            return
+        } else {
+            Snackbar.make(
+                requireContext(),
+                binding.snackBarCoordinator,
+                state.repeatText ?: getString(R.string.SNACKBAR_ERROR),
+                Snackbar.LENGTH_LONG
+            ).setAction(getString(R.string.repeat)) {
+                state.repeatAction.apply { this() }
+            }
+                .show()
         }
 
-        binding.errorGroup.visibility = VISIBLE
-        binding.progress.visibility = GONE
-        binding.postList.visibility = INVISIBLE
-        binding.submitButton.isEnabled = false
-        binding.postContent.isEnabled = false
+        //binding.errorGroup.visibility = VISIBLE
+        //binding.progress.visibility = GONE
+        //binding.postList.visibility = INVISIBLE
+
+        //binding.submitButton.isEnabled = false
+        //binding.postContent.isEnabled = false
+
+        viewModel.changeState(ScreenState.Working())
     }
 
     private fun showWorking(state: ScreenState.Working) {
         if (state.moveRecyclerViewPointerToTop) {
-            binding.postList.layoutManager?.scrollToPosition(0)
+            scrollOnNextSubmit = true
             viewModel.changeState(ScreenState.Working())
-            //binding.postListSwipeRefresh.isRefreshing = false
         }
 
-        binding.errorGroup.visibility = GONE
-        binding.progress.visibility = GONE
+        binding.emptyText.visibility =
+            if (viewModel.data.value?.posts?.size == 0) VISIBLE else GONE
+
+        binding.postListSwipeRefresh.isRefreshing = false
+        //binding.errorGroup.visibility = GONE
+        //binding.progress.visibility = GONE
         binding.submitButton.isEnabled = true
         binding.postContent.isEnabled = true
-        binding.clickPreventer.visibility = GONE
+        //binding.clickPreventer.visibility = GONE
         //binding.postListSwipeRefresh.visibility = VISIBLE
     }
 
-    private fun showLoading() {
-        binding.progress.visibility = VISIBLE
-        binding.errorGroup.visibility = GONE
+    private fun showLoading(state: ScreenState.Loading) {
+        //binding.progress.visibility = VISIBLE
+        //binding.errorGroup.visibility = GONE
         binding.submitButton.isEnabled = false
         binding.postContent.isEnabled = false
 
         binding.emptyText.visibility = INVISIBLE
 
-        binding.clickPreventer.visibility = VISIBLE
-        binding.postList.visibility = VISIBLE
+        //binding.clickPreventer.visibility = VISIBLE
+        //binding.postList.visibility = VISIBLE
         //binding.postListSwipeRefresh.visibility = INVISIBLE
+        //if (state.showRefreshAnimation)
+        binding.postListSwipeRefresh.isRefreshing = true
     }
 
     private fun subscribe() {
         adapter = PostsAdapter(OnPostInteractionListenerImpl(viewModel, this))
         binding.postList.adapter = adapter
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
+        viewModel.data.observe(viewLifecycleOwner) { data ->
             binding.postList.runWhenReady {
                 //показываем текст-заглушку при пустом списке
                 binding.emptyText.visibility =
-                    if (viewModel.data.value?.size == 0) VISIBLE else GONE
+                    if (viewModel.data.value?.posts?.size == 0) VISIBLE else GONE
             }
 
             //сортировка вывода списка
-            adapter.submitList(posts.sortedByDescending { it.published })
+            adapter.submitList(data.posts.sortedByDescending { it.published })
+
+            if (scrollOnNextSubmit) {
+                binding.postList.runWhenReady {
+                    binding.postList.layoutManager?.scrollToPosition(0)
+                }
+            }
         }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ScreenState.Error -> showError(state)
-                is ScreenState.Loading -> showLoading()
+                is ScreenState.Loading -> showLoading(state)
                 is ScreenState.Working -> showWorking(state)
             }
         }

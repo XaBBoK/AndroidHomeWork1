@@ -1,18 +1,16 @@
 package ru.netology.nmedia.api
 
-import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.utils.ifNotEmpty
+import ru.netology.nmedia.error.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -39,22 +37,22 @@ private val retrofit = Retrofit.Builder()
 
 interface PostApiService {
     @GET("posts")
-    fun getAll(): Call<List<Post>>
+    suspend fun getAll(): Response<List<Post>>
 
     @DELETE("posts/{id}")
-    fun removeById(@Path("id") id: Long): Call<Unit>
+    suspend fun removeById(@Path("id") id: Long): Response<Unit>
 
     @POST("posts")
-    fun addOrEditPost(@Body post: Post): Call<Post>
+    suspend fun addOrEditPost(@Body post: Post): Response<Post>
 
     @GET("posts/{id}")
-    fun getPostById(@Path("id") id: Long): Call<Post>
+    suspend fun getPostById(@Path("id") id: Long): Response<Post>
 
     @POST("posts/{id}/likes")
-    fun likeById(@Path("id") id: Long): Call<Post>
+    suspend fun likeById(@Path("id") id: Long): Response<Post>
 
     @DELETE("posts/{id}/likes")
-    fun unlikeById(@Path("id") id: Long): Call<Post>
+    suspend fun unlikeById(@Path("id") id: Long): Response<Post>
 }
 
 object PostApi {
@@ -64,28 +62,20 @@ object PostApi {
 }
 
 object PostApiInterceptor : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
+    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val request: Request = chain.request()
 
-        Log.i(
-            PostApiInterceptor::class.simpleName,
-            "Sending request ${request.url}"
-        )
-
-        val response: Response = try {
+        val response: okhttp3.Response = try {
             chain.proceed(request)
+        } catch (e: IOException) {
+            throw NetworkAppError
         } catch (e: Exception) {
-            throw IOException("Error on request URL\"${request.url}\": ${e.message}")
+            throw UnknownAppError
         }
-
-        val msg =
-            "Received response with code ${response.code} for request ${request.url}${response.message.ifNotEmpty { " with message ${response.message}" }}${if (request.headers.size > 0) " with headers ${request.headers}" else ""} "
-
-        Log.i(PostApiInterceptor::class.simpleName, msg)
 
         if (!response.isSuccessful) {
             response.close()
-            throw IOException(msg)
+            throw ApiAppError(response.code, response.message)
         }
 
         return response

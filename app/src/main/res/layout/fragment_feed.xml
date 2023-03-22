@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
-        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintBottom_toTopOf="@id/snackBarCoordinator"
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".presentation.fragments.FeedFragment">
 
@@ -74,10 +74,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
-            tools:ignore="KeyboardInaccessibleWidget"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:ignore="KeyboardInaccessibleWidget" />
 
     </FrameLayout>
+
+    <!--for Snack bar-->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/snackBarCoordinator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintTop_toBottomOf="@id/frame" />
 
     <ImageView
         android:id="@+id/divider"
@@ -88,7 +96,7 @@
         android:scaleType="fitXY"
         android:src="@android:drawable/divider_horizontal_bright"
         app:layout_constraintBottom_toTopOf="@id/editingTitle"
-        app:layout_constraintTop_toBottomOf="@id/frame"
+        app:layout_constraintTop_toBottomOf="@id/snackBarCoordinator"
         tools:ignore="ContentDescription" />
 
     <TextView

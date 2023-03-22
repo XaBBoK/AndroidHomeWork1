@@ -5,22 +5,20 @@ import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.*
 import ru.netology.nmedia.domain.repository.PostRepository
-import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.SingleLiveEvent
 
 class PostViewModel(
     private val repository: PostRepository,
-    private val savedStateHandler: SavedStateHandle
+    private val savedStateHandler: SavedStateHandle,
+    //private val scope: CoroutineScope = MainScope()
 ) : ViewModel() {
     val edited: MutableLiveData<Post?> = MutableLiveData()
     var draft: String? = null
 
     private val _state = MutableLiveData<ScreenState>(ScreenState.Working())
-    private val _data = MutableLiveData<List<Post>>(emptyList())
 
-    val data: LiveData<List<Post>>
-        get() = _data
+    val data: LiveData<FeedModel> = repository.data.map { FeedModel(it) }
 
     val state: LiveData<ScreenState>
         get() = _state
@@ -35,52 +33,50 @@ class PostViewModel(
     }
 
     fun likeById(id: Long) {
-        changeState(ScreenState.Loading)
+        (data.value?.posts?.firstOrNull { it.id == id })?.let { post ->
+            viewModelScope.launch {
+                runCatching {
+                    //changeState(ScreenState.Loading())
 
-        val callback = object : PostRepository.Callback<Post> {
-            override fun onError(e: Exception) {
-                changeState(ScreenState.Error(e.message.toString()))
-            }
-
-            override fun onSuccess(data: Post) {
-                data.let { post ->
-                    _data.value?.map {
-                        if (id == it.id) post
-                        else it
-                    }.let {
-                        _data.postValue(it)
+                    if (!post.likedByMe) {
+                        repository.likeById(id)
+                    } else {
+                        repository.unlikeById(id)
                     }
-                }.let {
-                    changeState(ScreenState.Working())
+                }
+
+                    //changeState(ScreenState.Working())
+                .onFailure { e ->
+                    changeState(
+                        ScreenState.Error(
+                            message = e.message.toString(),
+                            repeatText = "Ошибка при обработке лайка!"
+                        ) {
+                            likeById(id)
+                        }
+                    )
                 }
             }
         }
-
-        _data.value?.filter { post -> post.id == id }
-            ?.firstOrNull()?.likedByMe?.let { likedByMe ->
-                if (likedByMe) {
-                    repository.unlikeById(id, callback)
-                } else {
-                    repository.likeById(id, callback)
-                }
-            }
     }
 
     fun removeById(id: Long) {
-        changeState(ScreenState.Loading)
-        repository.removeById(id, object : PostRepository.Callback<Unit> {
-            override fun onSuccess(data: Unit) {
-                val posts = _data.value?.filter { post -> (post.id != id) }
-                posts?.let {
-                    _data.postValue(it)
-                    changeState(ScreenState.Working())
-                }
+        viewModelScope.launch {
+            runCatching {
+                //changeState(ScreenState.Loading())
+                repository.removeById(id)
+                //changeState(ScreenState.Working())
+            }.onFailure { e ->
+                changeState(
+                    ScreenState.Error(
+                        message = e.message.toString(),
+                        repeatText = "Ошибка при удалении!"
+                    ) {
+                        removeById(id)
+                    }
+                )
             }
-
-            override fun onError(e: Exception) {
-                changeState(ScreenState.Error(e.message.toString()))
-            }
-        })
+        }
     }
 
     fun addOrEditPost(post: Post) {
@@ -89,32 +85,18 @@ class PostViewModel(
             addingPost = it.copy(content = post.content)
         }
 
-        changeState(ScreenState.Loading)
-        repository.addOrEditPost(addingPost, object : PostRepository.Callback<Post> {
-            override fun onSuccess(data: Post) {
-                data.apply {
-                    also {
-                        if (post.id == NON_EXISTING_POST_ID) {
-                            _data.postValue(_data.value?.plus(it))
-                            return@apply
-                        }
-                    }
-                    also {
-                        _data.postValue(_data.value?.map { if (it.id == post.id) this else it })
-                        return@apply
-                    }
-                }.apply {
-                    edited.postValue(null)
-                    changeState(ScreenState.Working(moveRecyclerViewPointerToTop = (post.id == NON_EXISTING_POST_ID)))
-                    _fragmentEditPostEdited.postValue(Unit)
-                }
-            }
-
-            override fun onError(e: Exception) {
+        viewModelScope.launch {
+            try {
+                //changeState(ScreenState.Loading())
+                repository.addOrEditPost(addingPost)
+                edited.postValue(null)
+                //changeState(ScreenState.Working(moveRecyclerViewPointerToTop = (post.id == NON_EXISTING_POST_ID)))
+                _fragmentEditPostEdited.postValue(Unit)
+            } catch (e: Exception) {
                 _fragmentEditPostEdited.postValue(Unit)
                 changeState(ScreenState.Error(e.message.toString()))
             }
-        })
+        }
     }
 
     init {
@@ -122,21 +104,15 @@ class PostViewModel(
     }
 
     fun loadPosts() {
-        changeState(ScreenState.Loading)
-
-        repository.getAll(object : PostRepository.Callback<List<Post>> {
-            override fun onSuccess(data: List<Post>) {
-                _data.postValue(data)
+        viewModelScope.launch {
+            try {
+                changeState(ScreenState.Loading)
+                repository.getAll()
                 changeState(ScreenState.Working(true))
-            }
-
-            override fun onError(e: Exception) {
-                _data.postValue(
-                    emptyList()
-                )
+            } catch (e: Exception) {
                 changeState(ScreenState.Error(e.message.toString(), needReload = true))
             }
-        })
+        }
     }
 
     fun editPost(post: Post) {

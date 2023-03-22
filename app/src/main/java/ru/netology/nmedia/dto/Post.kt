@@ -31,20 +31,6 @@ data class Post(
             attachment = attachment?.copy(url = "${BuildConfig.BASE_URL_IMAGES}${attachment?.url}")
         )
     }
-
-    companion object {
-        fun fromDto(dto: Post): PostEntity {
-            dto.apply {
-                return PostEntity(id, author, content, published, likedByMe, likes, shares, video)
-            }
-        }
-
-        fun toDto(entity: PostEntity): Post {
-            entity.apply {
-                return Post(id, author, content, published, likedByMe, likes, shares, video)
-            }
-        }
-    }
 }
 
 @Parcelize
