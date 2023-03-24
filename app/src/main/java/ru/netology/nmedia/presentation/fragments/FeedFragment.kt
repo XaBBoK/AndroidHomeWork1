@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.*
 import android.widget.Toast
+import androidx.annotation.OptIn
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -20,6 +24,7 @@ import ru.netology.nmedia.utils.hideKeyboard
 import ru.netology.nmedia.utils.runWhenReady
 import ru.netology.nmedia.utils.viewBinding
 
+@ExperimentalBadgeUtils
 class FeedFragment : Fragment(R.layout.fragment_feed) {
     private val binding: FragmentFeedBinding by viewBinding(FragmentFeedBinding::bind)
 
@@ -80,6 +85,10 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
         binding.retryButton.setOnClickListener {
             viewModel.loadPosts()
+        }
+
+        binding.unreadMessagesButton.setOnClickListener {
+            viewModel.setAllVisible()
         }
 
     }
@@ -153,6 +162,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         binding.postListSwipeRefresh.isRefreshing = true
     }
 
+    @OptIn(ExperimentalBadgeUtils::class)
     private fun subscribe() {
         adapter = PostsAdapter(OnPostInteractionListenerImpl(viewModel, this))
         binding.postList.adapter = adapter
@@ -168,10 +178,50 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
             if (scrollOnNextSubmit) {
                 binding.postList.runWhenReady {
-                    binding.postList.layoutManager?.scrollToPosition(0)
+                    //binding.postList.layoutManager?.scrollToPosition(0)
+                    binding.postList.smoothScrollToPosition(0)
                 }
             }
         }
+
+        val badgeDrawable: BadgeDrawable by lazy {
+            val b = BadgeDrawable.create(requireActivity())
+            b.badgeGravity = BadgeDrawable.TOP_END
+            b.isVisible = false
+            b
+        }
+
+        viewModel.newerCount.observe(viewLifecycleOwner) {
+            /*Toast.makeText(context, "Новые сообщения: $it", Toast.LENGTH_LONG)
+                .show()
+
+            binding.postList.runWhenReady {
+                //binding.postList.smoothScrollToPosition(0)
+                binding.postList.layoutManager?.scrollToPosition(0)
+            }*/
+
+
+            badgeDrawable.isVisible = false
+
+            if (requireNotNull(it) > 0) {
+
+                badgeDrawable.number = it.toInt()
+                badgeDrawable.isVisible = true
+
+                BadgeUtils.attachBadgeDrawable(badgeDrawable, binding.unreadMessagesFrame)
+                //badgeDrawable.setVerticalOffset(20);
+                //badgeDrawable.setHorizontalOffset(15);
+
+
+                binding.unreadMessagesButton.visibility = VISIBLE
+            } else {
+                BadgeUtils.detachBadgeDrawable(badgeDrawable, binding.unreadMessagesFrame)
+                binding.unreadMessagesButton.visibility = INVISIBLE
+                badgeDrawable.isVisible = false
+            }
+
+        }
+
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {

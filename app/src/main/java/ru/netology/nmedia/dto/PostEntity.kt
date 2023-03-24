@@ -18,7 +18,8 @@ data class PostEntity(
     var likes: Int = 0,
     var shares: Int = 0,
     var video: String = "",
-    var attachment: Attachment? = null
+    var attachment: Attachment? = null,
+    var visible: Boolean = true
 ) {
 
 
@@ -52,7 +53,7 @@ data class PostEntity(
                     shares = shares,
                     video = video,
                     authorAvatar = authorAvatar,
-                    attachment = attachment
+                    attachment = attachment,
                 )
             }
         }

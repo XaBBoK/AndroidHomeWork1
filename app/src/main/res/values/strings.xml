@@ -26,4 +26,5 @@
     <string name="sendming_message_toast">Sending message …</string>
     <string name="attachment_image">Attachment image</string>
     <string name="repeat">Repeat</string>
+    <string name="new_messages">New messages</string>
 </resources>
