@@ -1,5 +1,6 @@
 package ru.netology.nmedia.api
 
+import kotlinx.coroutines.CancellationException
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -53,6 +54,9 @@ interface PostApiService {
 
     @DELETE("posts/{id}/likes")
     suspend fun unlikeById(@Path("id") id: Long): Response<Post>
+
+    @GET("posts/{id}/newer")
+    suspend fun getNewer(@Path("id") id: Long): Response<List<Post>>
 }
 
 object PostApi {
@@ -67,6 +71,8 @@ object PostApiInterceptor : Interceptor {
 
         val response: okhttp3.Response = try {
             chain.proceed(request)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: IOException) {
             throw NetworkAppError
         } catch (e: Exception) {

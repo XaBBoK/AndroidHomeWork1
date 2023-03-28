@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import ru.netology.nmedia.domain.repository.PostRepository
+import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.SingleLiveEvent
 
@@ -18,7 +21,18 @@ class PostViewModel(
 
     private val _state = MutableLiveData<ScreenState>(ScreenState.Working())
 
-    val data: LiveData<FeedModel> = repository.data.map { FeedModel(it) }
+    val data: LiveData<FeedModel> =
+        repository.data
+            .map { FeedModel(it) }
+            .asLiveData(Dispatchers.Default)
+
+    val newerCount: LiveData<Long> = data.switchMap {
+        repository.getNewerCount(it.posts.maxOfOrNull { post -> post.id } ?: 0L)
+            .catch { e ->
+                e.printStackTrace()
+            }
+            .asLiveData(Dispatchers.Default)
+    }
 
     val state: LiveData<ScreenState>
         get() = _state
@@ -30,6 +44,13 @@ class PostViewModel(
 
     fun changeState(newState: ScreenState) {
         _state.postValue(newState)
+    }
+
+    fun setAllVisible() {
+        viewModelScope.launch {
+            repository.setAllVisible()
+            changeState(ScreenState.Working(moveRecyclerViewPointerToTop = true))
+        }
     }
 
     fun likeById(id: Long) {
@@ -46,16 +67,16 @@ class PostViewModel(
                 }
 
                     //changeState(ScreenState.Working())
-                .onFailure { e ->
-                    changeState(
-                        ScreenState.Error(
-                            message = e.message.toString(),
-                            repeatText = "Ошибка при обработке лайка!"
-                        ) {
-                            likeById(id)
-                        }
-                    )
-                }
+                    .onFailure { e ->
+                        changeState(
+                            ScreenState.Error(
+                                message = e.message.toString(),
+                                repeatText = "Ошибка при обработке лайка!"
+                            ) {
+                                likeById(id)
+                            }
+                        )
+                    }
             }
         }
     }
@@ -90,7 +111,9 @@ class PostViewModel(
                 //changeState(ScreenState.Loading())
                 repository.addOrEditPost(addingPost)
                 edited.postValue(null)
-                //changeState(ScreenState.Working(moveRecyclerViewPointerToTop = (post.id == NON_EXISTING_POST_ID)))
+                if (post.id == NON_EXISTING_POST_ID)
+                    repository.setAllVisible()
+                changeState(ScreenState.Working(moveRecyclerViewPointerToTop = (post.id == NON_EXISTING_POST_ID)))
                 _fragmentEditPostEdited.postValue(Unit)
             } catch (e: Exception) {
                 _fragmentEditPostEdited.postValue(Unit)

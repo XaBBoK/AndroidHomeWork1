@@ -1,19 +1,34 @@
 package ru.netology.nmedia.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.dto.PostEntity
 
 @Dao
 interface PostDao {
     @Query("SELECT * FROM PostEntity ORDER BY id DESC")
-    fun getAll(): LiveData<List<PostEntity>>
+    fun getAll(): Flow<List<PostEntity>>
+
+    @Query("SELECT COUNT(id) FROM PostEntity WHERE visible = 0 ORDER BY id DESC")
+    fun getInvisibleCount(): Long
+
+    @Query("SELECT id FROM PostEntity WHERE visible = 0 ORDER BY id DESC LIMIT 1")
+    fun getBiggestInvisibleId() : Long?
+
+    @Query("UPDATE PostEntity SET visible = 1")
+    suspend fun setAllVisible()
 
     @Query("SELECT * FROM PostEntity WHERE id = :id")
     suspend fun getById(id: Long) : PostEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(post: PostEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertWithoutReplace(post: PostEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertWithoutReplace(posts: List<PostEntity>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(posts: List<PostEntity>): List<Long>
