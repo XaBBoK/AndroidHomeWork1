@@ -2,6 +2,7 @@ package ru.netology.nmedia.data.repository
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -32,21 +33,29 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
         flow {
             while (true) {
                 readMutex.withLock {
-                    val biggestInvisibleId = dao.getBiggestInvisibleId()
-                    //emit(dao.getInvisibleCount())
-                    val response = PostApi.service.getNewer(biggestInvisibleId ?: id)
+                    runCatching {
+                        val biggestInvisibleId = dao.getBiggestInvisibleId()
+                        //emit(dao.getInvisibleCount())
+                        val response = PostApi.service.getNewer(biggestInvisibleId ?: id)
 
-                    val body: List<Post> =
-                        response.body() ?: throw ApiAppError(response.code(), response.message())
-                    val p = body
-                        .map {
-                            PostEntity.fromDto(it)
-                                .copy(visible = false)
-                        }
+                        val body: List<Post> =
+                            response.body() ?: throw ApiAppError(response.code(), response.message())
+                        val p = body
+                            .map {
+                                PostEntity.fromDto(it)
+                                    .copy(visible = false)
+                            }
 
-                    dao.insertWithoutReplace(p)
-                    emit(dao.getInvisibleCount())
+                        dao.insertWithoutReplace(p)
+                    }.onSuccess {
+                        val count = dao.getInvisibleCount()
+                        emit(count)
+                    }.onFailure {
+                        it.printStackTrace()
+                    }
                 }
+
+                delay(1000)
             }
         }
             .flowOn(Dispatchers.Default)
