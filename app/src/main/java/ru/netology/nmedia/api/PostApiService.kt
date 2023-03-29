@@ -2,6 +2,7 @@ package ru.netology.nmedia.api
 
 import kotlinx.coroutines.CancellationException
 import okhttp3.Interceptor
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ru.netology.nmedia.BuildConfig
+import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.error.*
 import java.io.IOException
@@ -39,6 +41,10 @@ private val retrofit = Retrofit.Builder()
 interface PostApiService {
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>
+
+    @Multipart
+    @POST("media")
+    suspend fun uploadMedia(@Part part: MultipartBody.Part): Response<Media>
 
     @DELETE("posts/{id}")
     suspend fun removeById(@Path("id") id: Long): Response<Unit>

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import ru.netology.nmedia.dto.Post
 
-private const val POST_LIVE_DATA_SAVED_STATE_IDENTIFICATION = "POST_LIVE_DATA_SAVED_STATE"
+/*private const val POST_LIVE_DATA_SAVED_STATE_IDENTIFICATION = "POST_LIVE_DATA_SAVED_STATE"
 
 class EditPostViewModel(post: Post, private val savedStateHandler: SavedStateHandle) : ViewModel() {
     val data = savedStateHandler.getLiveData(POST_LIVE_DATA_SAVED_STATE_IDENTIFICATION, post)
@@ -36,4 +36,4 @@ class EditPostViewModel(post: Post, private val savedStateHandler: SavedStateHan
         }
     }
 
-}
+}*/
