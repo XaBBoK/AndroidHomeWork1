@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
+import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_IMAGE_URI
 import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_POST
 
 
@@ -82,6 +83,13 @@ class OnPostInteractionListenerImpl(
         fragment.findNavController().navigate(
             R.id.feedFragmentToPostDetailsFragment,
             bundleOf(Pair(INTENT_EXTRA_POST, post))
+        )
+    }
+
+    override fun onImageViewerFullscreen(image: String) {
+        fragment.findNavController().navigate(
+            R.id.action_global_imageViewerFragment,
+            bundleOf(Pair(INTENT_EXTRA_IMAGE_URI, image))
         )
     }
 

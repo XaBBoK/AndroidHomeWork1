@@ -2,6 +2,7 @@ package ru.netology.nmedia.presentation.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -11,6 +12,7 @@ import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.utils.load
+import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
 import ru.netology.nmedia.utils.viewBinding
 
 
@@ -27,6 +29,12 @@ class FragmentPostDetails : Fragment(R.layout.fragment_post_details) {
         binding.post = arguments?.getParcelable(
             INTENT_EXTRA_POST
         )
+
+        //добавляем верхнее меню с кнопкой назад
+        (activity as? AppCompatActivity)?.apply {
+            setSupportActionBar(binding.toolbar)
+            setupActionBarWithNavControllerDefault()
+        }
 
         viewModel.data.observe(viewLifecycleOwner) { data ->
             val p = data.posts.firstOrNull { it.id == binding.post?.id }?.withBaseUrls()
@@ -70,6 +78,12 @@ class FragmentPostDetails : Fragment(R.layout.fragment_post_details) {
 
                 videoPreview.setOnClickListener {
                     onInteractionListener.onVideo(post, it)
+                }
+
+                attachmentImage.setOnClickListener {
+                    post.withBaseUrls().attachment?.url?.let { image ->
+                        onInteractionListener.onImageViewerFullscreen(image)
+                    }
                 }
             }
         }
