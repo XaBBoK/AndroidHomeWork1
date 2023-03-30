@@ -54,7 +54,7 @@ class PostViewHolder(
                 //roundedCornersRadius = 36
             )
 
-            post.withBaseUrls().attachment?.takeIf { it.type == AttachmentType.IMAGE } ?.let {
+            post.withBaseUrls().attachment?.takeIf { it.type == AttachmentType.IMAGE }?.let {
                 attachmentImage.visibility = VISIBLE
                 attachmentImage.load(
                     url = it.url,
@@ -84,6 +84,12 @@ class PostViewHolder(
 
             root.setOnClickListener {
                 onInteractionListener.onPostDetails(post)
+            }
+
+            attachmentImage.setOnClickListener {
+                post.withBaseUrls().attachment?.url?.let { image ->
+                    onInteractionListener.onImageViewerFullscreen(image)
+                }
             }
         }
     }

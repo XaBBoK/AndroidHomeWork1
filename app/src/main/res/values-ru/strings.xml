@@ -35,4 +35,5 @@
     <string name="take_image_from_gallery">Кнопка получения изображения из галлереи</string>
     <string name="clear_button">Очистить</string>
     <string name="attachment_image_preview">Превью приложения</string>
+    <string name="attachment_image_preview_title">Изображение</string>
 </resources>

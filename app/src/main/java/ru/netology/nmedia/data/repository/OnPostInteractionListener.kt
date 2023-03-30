@@ -10,4 +10,5 @@ interface OnPostInteractionListener {
     fun onMore(post: Post, view: View)
     fun onVideo(post: Post, view: View)
     fun onPostDetails(post: Post)
+    fun onImageViewerFullscreen(image: String)
 }

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.NMedia" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.NMedia" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -11,6 +11,20 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="colorPrimaryDark">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.NMedia.Black" parent="Theme.NMedia">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/black_overlay</item>
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+    </style>
+
+    <style name="Theme.NMedia.Toolbar">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
 </resources>

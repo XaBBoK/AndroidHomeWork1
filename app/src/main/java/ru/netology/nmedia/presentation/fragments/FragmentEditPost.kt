@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -24,10 +25,12 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.utils.load
 import ru.netology.nmedia.utils.setActionBarTitle
+import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
 import ru.netology.nmedia.utils.viewBinding
 
 
 const val INTENT_EXTRA_POST = "POST-DATA"
+const val INTENT_EXTRA_IMAGE_URI = "IMAGE-URI"
 
 class FragmentEditPost : Fragment(R.layout.fragment_edit_post) {
 
@@ -35,12 +38,18 @@ class FragmentEditPost : Fragment(R.layout.fragment_edit_post) {
     private lateinit var photoLauncher: ActivityResultLauncher<Intent>
     private val viewModel by viewModels<PostViewModel>({ requireParentFragment() })
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //добавляем верхнее меню с кнопкой назад
+        (activity as? AppCompatActivity)?.apply {
+            setSupportActionBar(binding.toolbar)
+            setupActionBarWithNavControllerDefault()
+        }
+
         binding.lifecycleOwner = viewLifecycleOwner
 
+        //binding.post сохраняется между сменами конфигурации благодаря arguments
         binding.post = arguments?.getParcelable(
             INTENT_EXTRA_POST
         ) ?: Post()
@@ -97,14 +106,15 @@ class FragmentEditPost : Fragment(R.layout.fragment_edit_post) {
             if (media.uri == null) {
                 binding.previewContainer.visibility = View.GONE
 
-                binding.post?.withBaseUrls()?.attachment?.takeIf { it.type == AttachmentType.IMAGE }?.let {
-                    binding.preview.load(
-                        url = it.url,
-                        placeholder = R.drawable.ic_loading_placeholder
-                    )
+                binding.post?.withBaseUrls()?.attachment?.takeIf { it.type == AttachmentType.IMAGE }
+                    ?.let {
+                        binding.preview.load(
+                            url = it.url,
+                            placeholder = R.drawable.ic_loading_placeholder
+                        )
 
-                    binding.previewContainer.visibility = View.VISIBLE
-                }
+                        binding.previewContainer.visibility = View.VISIBLE
+                    }
 
                 return@observe
             }

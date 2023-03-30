@@ -34,4 +34,5 @@
     <string name="take_image_from_gallery">Take image from gallery button</string>
     <string name="clear_button">Clear</string>
     <string name="attachment_image_preview">Attachment image preview</string>
+    <string name="attachment_image_preview_title">Image</string>
 </resources>

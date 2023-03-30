@@ -21,6 +21,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="@style/Theme.NMedia.Toolbar"
+                app:layout_scrollFlags="scroll|enterAlways"
+                tools:title="test" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -76,9 +84,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="4"
                             android:adjustViewBounds="true"
+                            android:contentDescription="@string/attachment_image_preview"
                             android:padding="8dp"
-                            tools:srcCompat="@tools:sample/avatars"
-                            android:contentDescription="@string/attachment_image_preview" />
+                            tools:srcCompat="@tools:sample/avatars" />
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
@@ -104,19 +112,19 @@
                 android:id="@+id/gallery"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/take_image_from_gallery"
                 android:padding="16dp"
                 app:srcCompat="@drawable/baseline_image_24"
-                app:tint="?colorButtonNormal"
-                android:contentDescription="@string/take_image_from_gallery" />
+                app:tint="?colorButtonNormal" />
 
             <ImageView
                 android:id="@+id/photo"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/take_photo_button"
                 android:padding="16dp"
                 app:srcCompat="@drawable/baseline_photo_camera_24"
-                app:tint="?colorButtonNormal"
-                android:contentDescription="@string/take_photo_button" />
+                app:tint="?colorButtonNormal" />
         </LinearLayout>
     </LinearLayout>
 </layout>
