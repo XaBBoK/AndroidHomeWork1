@@ -10,7 +10,7 @@ const val NON_EXISTING_POST_ID = 0L
 data class Post(
     val id: Long = NON_EXISTING_POST_ID,
     val author: String = "",
-    val content: String = "",
+    var content: String = "",
     val published: Long = 0L,
     var likedByMe: Boolean = false,
     var likes: Int = 0,
@@ -31,17 +31,6 @@ data class Post(
             attachment = attachment?.copy(url = "${BuildConfig.BASE_URL_IMAGES}${attachment?.url}")
         )
     }
-}
-
-@Parcelize
-data class Attachment(
-    val url: String,
-    val description: String?,
-    val type: AttachmentType,
-) : Parcelable
-
-enum class AttachmentType {
-    IMAGE
 }
 
 fun List<Post>.listWithBaseUrls(): List<Post> = this.map {

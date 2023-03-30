@@ -8,7 +8,7 @@
     <string name="views">Read</string>
     <string name="cancelEditingButton">Edit cancel button</string>
     <string name="postContent">Post text</string>
-    <string name="post_edit">Editing a post</string>
+    <string name="label_post_edit_title">Post editing</string>
     <string name="send_button">Send button</string>
     <string name="editPostMenuElement">Edit</string>
     <string name="removePostMenuElement">Remove</string>
@@ -27,4 +27,11 @@
     <string name="attachment_image">Attachment image</string>
     <string name="repeat">Repeat</string>
     <string name="new_messages">New messages</string>
+    <string name="label_new_post_title">New post</string>
+    <string name="post_details_title">Details</string>
+    <string name="message_text_hint">Message text</string>
+    <string name="take_photo_button">Take photo button</string>
+    <string name="take_image_from_gallery">Take image from gallery button</string>
+    <string name="clear_button">Clear</string>
+    <string name="attachment_image_preview">Attachment image preview</string>
 </resources>

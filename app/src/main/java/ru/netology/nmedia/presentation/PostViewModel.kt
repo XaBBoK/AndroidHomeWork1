@@ -1,5 +1,6 @@
 package ru.netology.nmedia.presentation
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
@@ -10,14 +11,21 @@ import ru.netology.nmedia.domain.repository.PostRepository
 import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.SingleLiveEvent
+import java.io.File
 
 class PostViewModel(
     private val repository: PostRepository,
     private val savedStateHandler: SavedStateHandle,
     //private val scope: CoroutineScope = MainScope()
 ) : ViewModel() {
-    val edited: MutableLiveData<Post?> = MutableLiveData()
-    var draft: String? = null
+    val edited: MutableLiveData<Post?> = MutableLiveData(null)
+    private val emptyMedia = MediaModel()
+
+    private val _media = MutableLiveData<MediaModel>(emptyMedia)
+    val media: LiveData<MediaModel>
+        get() = _media
+
+    var draft: Post? = null
 
     private val _state = MutableLiveData<ScreenState>(ScreenState.Working())
 
@@ -41,6 +49,14 @@ class PostViewModel(
 
     val fragmentEditPostEdited: LiveData<Unit>
         get() = _fragmentEditPostEdited
+
+    fun changePhoto(file: File, uri: Uri) {
+        _media.value = MediaModel(file = file, uri = uri)
+    }
+
+    fun clearPhoto() {
+        _media.value = emptyMedia
+    }
 
     fun changeState(newState: ScreenState) {
         _state.postValue(newState)
@@ -108,13 +124,22 @@ class PostViewModel(
 
         viewModelScope.launch {
             try {
-                //changeState(ScreenState.Loading())
-                repository.addOrEditPost(addingPost)
-                edited.postValue(null)
-                if (post.id == NON_EXISTING_POST_ID)
-                    repository.setAllVisible()
-                changeState(ScreenState.Working(moveRecyclerViewPointerToTop = (post.id == NON_EXISTING_POST_ID)))
-                _fragmentEditPostEdited.postValue(Unit)
+                media.value?.let { media ->
+                    when (media) {
+                        emptyMedia -> repository.addOrEditPost(addingPost)
+                        else -> repository.addOrEditPostWithAttachment(addingPost, media)
+                    }
+
+                    //changeState(ScreenState.Loading())
+                    edited.postValue(null)
+                    clearPhoto()
+
+                    if (post.id == NON_EXISTING_POST_ID)
+                        repository.setAllVisible()
+
+                    changeState(ScreenState.Working(moveRecyclerViewPointerToTop = (post.id == NON_EXISTING_POST_ID)))
+                    _fragmentEditPostEdited.postValue(Unit)
+                }
             } catch (e: Exception) {
                 _fragmentEditPostEdited.postValue(Unit)
                 changeState(ScreenState.Error(e.message.toString()))
@@ -135,14 +160,6 @@ class PostViewModel(
             } catch (e: Exception) {
                 changeState(ScreenState.Error(e.message.toString(), needReload = true))
             }
-        }
-    }
-
-    fun editPost(post: Post) {
-        try {
-            edited.value = post
-        } catch (e: Exception) {
-            changeState(ScreenState.Error(e.message.toString()))
         }
     }
 

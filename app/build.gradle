@@ -21,6 +21,7 @@ android {
         versionCode 1
         versionName "1.0"
 
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -42,7 +43,7 @@ android {
         }
         all {
             buildConfigField "String", "BASE_URL_AVATARS", 'BASE_URL + "avatars/"'
-            buildConfigField "String", "BASE_URL_IMAGES", 'BASE_URL + "images/"'
+            buildConfigField "String", "BASE_URL_IMAGES", 'BASE_URL + "media/"'
         }
     }
     compileOptions {
@@ -104,4 +105,6 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
+
+    implementation "com.github.dhaval2404:imagepicker:2.1"
 }

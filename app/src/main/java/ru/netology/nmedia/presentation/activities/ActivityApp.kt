@@ -7,6 +7,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -17,9 +21,18 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_POST
 
 class ActivityApp : AppCompatActivity(R.layout.activity_app) {
+
+    private val navHostController by lazy { (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController }
+    private val appBarConf by lazy { AppBarConfiguration(navHostController.graph) }
+    override fun onSupportNavigateUp(): Boolean {
+        return navHostController.navigateUp(appBarConf) || super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_app)
+
+        setupActionBarWithNavController(navHostController, appBarConf)
 
         checkGoogleApiAvailability()
         handleIntent()

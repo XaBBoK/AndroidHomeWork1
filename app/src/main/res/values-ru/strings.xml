@@ -9,7 +9,7 @@
     <string name="views">Прочитано</string>
     <string name="cancelEditingButton">Кнопка отмены редактирования</string>
     <string name="postContent">Текст сообщения</string>
-    <string name="post_edit">Редактирование сообщения</string>
+    <string name="label_post_edit_title">Редактирование сообщения</string>
     <string name="send_button">Кнопка отправить</string>
     <string name="editPostMenuElement">Редактировать</string>
     <string name="removePostMenuElement">Удалить</string>
@@ -28,4 +28,11 @@
     <string name="attachment_image">Приложение с изображением</string>
     <string name="repeat">Повтор</string>
     <string name="new_messages">Новые сообщения</string>
+    <string name="label_new_post_title">Новый пост</string>
+    <string name="post_details_title">Подробно</string>
+    <string name="message_text_hint">Текст сообщения</string>
+    <string name="take_photo_button">Кнопка сфотографировать</string>
+    <string name="take_image_from_gallery">Кнопка получения изображения из галлереи</string>
+    <string name="clear_button">Очистить</string>
+    <string name="attachment_image_preview">Превью приложения</string>
 </resources>

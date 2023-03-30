@@ -123,7 +123,7 @@
         android:id="@+id/editingTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/post_edit"
+        android:text="@string/label_post_edit_title"
         android:textColor="@color/tint_color_highlight"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@id/editingOrigContent"

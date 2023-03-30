@@ -18,6 +18,7 @@ data class PostEntity(
     var likes: Int = 0,
     var shares: Int = 0,
     var video: String = "",
+    //@Embedded
     var attachment: Attachment? = null,
     var visible: Boolean = true
 ) {
