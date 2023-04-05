@@ -9,8 +9,13 @@
         android:id="@+id/imageViewerFullscreenFragment"
         android:name="ru.netology.nmedia.presentation.fragments.ImageViewerFullscreen"
         android:label="@string/attachment_image_preview_title"
-        tools:layout="@layout/fragment_image_viewer">
-    </fragment>
+        tools:layout="@layout/fragment_image_viewer" />
+
+    <fragment
+        android:id="@+id/AuthFragment"
+        android:name="ru.netology.nmedia.presentation.fragments.AuthFragment"
+        android:label="@string/sign_in_label"
+        tools:layout="@layout/fragment_auth" />
 
     <fragment
         android:id="@+id/feedFragment"
@@ -62,6 +67,14 @@
     <action
         android:id="@+id/action_global_imageViewerFragment"
         app:destination="@id/imageViewerFullscreenFragment"
+        app:enterAnim="@android:anim/fade_in"
+        app:exitAnim="@android:anim/fade_out"
+        app:popEnterAnim="@android:anim/fade_in"
+        app:popExitAnim="@android:anim/fade_out" />
+
+    <action
+        android:id="@+id/action_global_authFragment"
+        app:destination="@id/AuthFragment"
         app:enterAnim="@android:anim/fade_in"
         app:exitAnim="@android:anim/fade_out"
         app:popEnterAnim="@android:anim/fade_in"

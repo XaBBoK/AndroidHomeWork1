@@ -1,11 +1,16 @@
 package ru.netology.nmedia.presentation.fragments
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.View.*
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -15,10 +20,12 @@ import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
 import ru.netology.nmedia.data.repository.PostRepositoryHTTPImpl
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.presentation.AuthViewModel
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.presentation.ScreenState
 import ru.netology.nmedia.utils.hideKeyboard
@@ -34,6 +41,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         ownerProducer = ::requireParentFragment,
         factoryProducer = { PostViewModel.Factory(this, PostRepositoryHTTPImpl(requireContext())) }
     )
+
+    private val authViewModel by viewModels<AuthViewModel>()
 
     private lateinit var adapter: PostsAdapter
     private var scrollOnNextSubmit: Boolean = false
@@ -79,7 +88,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
         binding.submitButton.setOnLongClickListener {
             findNavController().navigate(
-                R.id.feedFragmentToEditPostFragment
+                R.id.feedFragmentToEditPostFragment,
+                bundleOf(Pair(INTENT_EXTRA_POST, Post()))
             )
             true
         }
@@ -100,7 +110,6 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         binding.unreadMessagesButton.setOnClickListener {
             viewModel.setAllVisible()
         }
-
     }
 
     private fun showError(state: ScreenState.Error) {
@@ -255,6 +264,43 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                 binding.editingOrigContent.text = it.content
                 //binding.editOrigGroup.visibility = View.VISIBLE
             }
+        }
+
+        var previousMenuProvider: MenuProvider? = null
+
+        authViewModel.data.observe(viewLifecycleOwner) {
+            previousMenuProvider?.let {
+                requireActivity().removeMenuProvider(it)
+            }
+
+            requireActivity().addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.menu_auth, menu)
+
+                    menu.setGroupVisible(R.id.authorized, authViewModel.authorized)
+                    menu.setGroupVisible(R.id.unauthorized, !authViewModel.authorized)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
+                        R.id.login -> {
+                            findNavController().navigate(
+                                R.id.action_global_authFragment)
+                            true
+                        }
+
+                        R.id.register -> {
+                            AppAuth.getInstance().setAuth(5, "x-token")
+                            true
+                        }
+
+                        R.id.logout -> {
+                            AppAuth.getInstance().removeAuth()
+                            true
+                        }
+                        else -> false
+                    }
+            }.also { previousMenuProvider = it }, viewLifecycleOwner)
         }
     }
 }

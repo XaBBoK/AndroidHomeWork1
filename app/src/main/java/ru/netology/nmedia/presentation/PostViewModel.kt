@@ -6,7 +6,9 @@ import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.domain.repository.PostRepository
 import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
@@ -29,10 +31,16 @@ class PostViewModel(
 
     private val _state = MutableLiveData<ScreenState>(ScreenState.Working())
 
-    val data: LiveData<FeedModel> =
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val data: LiveData<FeedModel> = AppAuth.getInstance().data.flatMapLatest { auth ->
         repository.data
-            .map { FeedModel(it) }
-            .asLiveData(Dispatchers.Default)
+            .map { posts ->
+                FeedModel(posts.map {
+                    it.copy(ownedByMe = auth?.id == it.authorId)
+                })
+            }
+
+    }.asLiveData(Dispatchers.Default)
 
     val newerCount: LiveData<Long> = data.switchMap {
         repository.getNewerCount(it.posts.maxOfOrNull { post -> post.id } ?: 0L)

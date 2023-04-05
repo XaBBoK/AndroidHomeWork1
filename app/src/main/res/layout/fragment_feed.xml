@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/Theme.NMedia.Toolbar"
+            app:popupTheme="@style/Theme.NMedia.Toolbar.Menu"
             app:layout_scrollFlags="scroll|enterAlways"
             tools:title="test" />
 

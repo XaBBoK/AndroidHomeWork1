@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NMedia"
         tools:targetApi="31"
-        android:usesCleartextTraffic="${usesCleartextTraffic}">
+        android:usesCleartextTraffic="${usesCleartextTraffic}"
+        android:name=".application.NMediaApplication">
         <activity
             android:name=".presentation.activities.ActivityApp"
             android:exported="true">

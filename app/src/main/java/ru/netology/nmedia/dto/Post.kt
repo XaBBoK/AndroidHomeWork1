@@ -9,6 +9,7 @@ const val NON_EXISTING_POST_ID = 0L
 @Parcelize
 data class Post(
     val id: Long = NON_EXISTING_POST_ID,
+    val authorId: Long = 0L,
     val author: String = "",
     var content: String = "",
     val published: Long = 0L,
@@ -18,6 +19,7 @@ data class Post(
     var video: String = "",
     val authorAvatar: String = "",
     var attachment: Attachment? = null,
+    var ownedByMe: Boolean = false,
 
     ) : Parcelable {
 
