@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/post_more_menu"
         android:padding="@dimen/posts_margins"
-
+        app:popupTheme="@style/Theme.NMedia.Toolbar.Menu"
         app:layout_constraintBottom_toBottomOf="@id/published"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/author"
