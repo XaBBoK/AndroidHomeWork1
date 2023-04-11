@@ -53,4 +53,10 @@
     <string name="no_answer_text">Нет</string>
     <string name="yes_answer_text">Да</string>
     <string name="you_cant_like_own_posts_message">Вы не можете лайкать свои посты!</string>
+    <string name="password_label_confirm">Подтверждение пароля</string>
+    <string name="name_label">Имя</string>
+    <string name="sign_up_label">Регистрация</string>
+    <string name="user_already_exists_message">Пользователь уже существует!</string>
+    <string name="change_avatar_button_text">Изменить</string>
+    <string name="clear_avatar_button_text">Очистить</string>
 </resources>
