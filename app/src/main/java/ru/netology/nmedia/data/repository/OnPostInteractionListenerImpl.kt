@@ -5,11 +5,15 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_IMAGE_URI
@@ -23,7 +27,29 @@ class OnPostInteractionListenerImpl(
     OnPostInteractionListener {
 
     override fun onLike(post: Post) {
-        viewModel.likeById(post.id)
+        fragment.lifecycleScope.launch {
+            if (!AppAuth.getInstance().isAuth()) {
+                Toast.makeText(
+                    fragment.requireContext(),
+                    fragment.requireContext().getString(R.string.login_to_like_message),
+                    Toast.LENGTH_LONG
+                ).show()
+                fragment.findNavController().navigate(
+                    R.id.action_global_authFragment
+                )
+            } else {
+                if (post.ownedByMe) {
+                    Toast.makeText(
+                        fragment.requireContext(),
+                        fragment.requireContext().getString(R.string.you_cant_like_own_posts_message),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    viewModel.likeById(post.id)
+                    return@launch
+                }
+            }
+        }
     }
 
     override fun onEdit(post: Post) {

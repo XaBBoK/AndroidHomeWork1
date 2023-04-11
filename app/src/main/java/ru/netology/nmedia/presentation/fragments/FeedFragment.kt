@@ -8,16 +8,19 @@ import android.view.View
 import android.view.View.*
 import android.widget.Toast
 import androidx.annotation.OptIn
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
@@ -81,16 +84,45 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                 return@setOnClickListener
             }
 
-            viewModel.addOrEditPost(
-                Post(content = content)
-            )
+            lifecycleScope.launch {
+                if (!AppAuth.getInstance().isAuth()) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.please_login_to_write_posts_message),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    findNavController().navigate(
+                        R.id.action_global_authFragment
+                    )
+                } else {
+                    viewModel.addOrEditPost(
+                        Post(content = content)
+                    )
+                    return@launch
+                }
+            }
         }
 
         binding.submitButton.setOnLongClickListener {
-            findNavController().navigate(
-                R.id.feedFragmentToEditPostFragment,
-                bundleOf(Pair(INTENT_EXTRA_POST, Post()))
-            )
+            lifecycleScope.launch {
+                if (!AppAuth.getInstance().isAuth()) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.please_login_to_write_posts_message),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    findNavController().navigate(
+                        R.id.action_global_authFragment
+                    )
+                } else {
+                    findNavController().navigate(
+                        R.id.feedFragmentToEditPostFragment,
+                        bundleOf(Pair(INTENT_EXTRA_POST, Post()))
+                    )
+                    return@launch
+                }
+            }
+
             true
         }
 
@@ -285,7 +317,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                     when (menuItem.itemId) {
                         R.id.login -> {
                             findNavController().navigate(
-                                R.id.action_global_authFragment)
+                                R.id.action_global_authFragment
+                            )
                             true
                         }
 
@@ -295,7 +328,15 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                         }
 
                         R.id.logout -> {
-                            AppAuth.getInstance().removeAuth()
+                            AlertDialog.Builder(requireContext())
+                                .setMessage(getString(R.string.are_you_sure_want_to_logout_message))
+                                .setNegativeButton(getString(R.string.no_answer_text)) { _, _ -> }
+                                .setPositiveButton(getString(R.string.yes_answer_text)) { _, _ ->
+                                    AppAuth.getInstance().removeAuth()
+                                }
+                                .create()
+                                .show()
+
                             true
                         }
                         else -> false

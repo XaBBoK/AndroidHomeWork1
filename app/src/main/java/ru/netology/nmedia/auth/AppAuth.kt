@@ -30,19 +30,30 @@ class AppAuth private constructor(context: Context) {
         }
     }
 
-    @Synchronized
+    fun isAuth(): Boolean {
+        synchronized(this) {
+            val token = prefs.getString(TOKEN_KEY, null)
+            val id = prefs.getLong(ID_KEY, 0L)
+            return !(token == null || id == 0L)
+        }
+    }
+
     fun setAuth(id: Long, token: String) {
-        _data.value = AuthModel(id = id, token = token)
-        prefs.edit {
-            putLong(ID_KEY, id)
-            putString(TOKEN_KEY, token)
+        synchronized(this) {
+            _data.value = AuthModel(id = id, token = token)
+            prefs.edit {
+                putLong(ID_KEY, id)
+                putString(TOKEN_KEY, token)
+            }
         }
     }
 
     @Synchronized
     fun removeAuth() {
-        _data.value = null
-        prefs.edit { clear() }
+        synchronized(this) {
+            _data.value = null
+            prefs.edit { clear() }
+        }
     }
 
     companion object {

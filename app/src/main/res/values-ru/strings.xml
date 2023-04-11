@@ -47,4 +47,10 @@
     <string name="check_internet_connection_text">Проверьте интернет!</string>
     <string name="unknown_error_text">Неизвестная ошибка!</string>
     <string name="ok_button_text">OK</string>
+    <string name="login_to_like_message">Пожалуйста войдите чтобы поставить лайк!</string>
+    <string name="please_login_to_write_posts_message">Пожалуйста войдите чтобы писать сообщения!</string>
+    <string name="are_you_sure_want_to_logout_message">Вы уверены, что хотите выйти?</string>
+    <string name="no_answer_text">Нет</string>
+    <string name="yes_answer_text">Да</string>
+    <string name="you_cant_like_own_posts_message">Вы не можете лайкать свои посты!</string>
 </resources>
