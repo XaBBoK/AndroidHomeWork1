@@ -1,10 +1,7 @@
 package ru.netology.nmedia.api
 
 import kotlinx.coroutines.CancellationException
-import okhttp3.Interceptor
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -42,9 +39,29 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface PostApiService {
+    @Multipart
+    @POST("users/registration")
+    suspend fun registerUser(
+        @Part("login") login: RequestBody,
+        @Part("pass") pass: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part media: MultipartBody.Part? = null,
+    ): Response<AuthModel>
+
+    /*@FormUrlEncoded
+    @POST("users/registration")
+    suspend fun registerUser(
+        @Field("login") login: String,
+        @Field("pass") pass: String,
+        @Field("name") name: String
+    ): Response<AuthModel>*/
+
     @FormUrlEncoded
     @POST("users/authentication")
-    suspend fun auth(@Field("login") login: String, @Field("pass") pass: String): Response<AuthModel>
+    suspend fun auth(
+        @Field("login") login: String,
+        @Field("pass") pass: String
+    ): Response<AuthModel>
 
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>

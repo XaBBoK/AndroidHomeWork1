@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_auth" />
 
     <fragment
+        android:id="@+id/SignUpFragment"
+        android:name="ru.netology.nmedia.presentation.fragments.SignUpFragment"
+        android:label="@string/sign_up_label"
+        tools:layout="@layout/fragment_sign_up" />
+
+    <fragment
         android:id="@+id/feedFragment"
         android:name="ru.netology.nmedia.presentation.fragments.FeedFragment"
         android:label="@string/app_name"
@@ -75,6 +81,14 @@
     <action
         android:id="@+id/action_global_authFragment"
         app:destination="@id/AuthFragment"
+        app:enterAnim="@android:anim/fade_in"
+        app:exitAnim="@android:anim/fade_out"
+        app:popEnterAnim="@android:anim/fade_in"
+        app:popExitAnim="@android:anim/fade_out" />
+
+    <action
+        android:id="@+id/action_global_SignUpFragment"
+        app:destination="@id/SignUpFragment"
         app:enterAnim="@android:anim/fade_in"
         app:exitAnim="@android:anim/fade_out"
         app:popEnterAnim="@android:anim/fade_in"

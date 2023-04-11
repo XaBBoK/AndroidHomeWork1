@@ -323,7 +323,9 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                         }
 
                         R.id.register -> {
-                            AppAuth.getInstance().setAuth(5, "x-token")
+                            findNavController().navigate(
+                                R.id.SignUpFragment
+                            )
                             true
                         }
 

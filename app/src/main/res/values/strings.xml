@@ -52,4 +52,10 @@
     <string name="no_answer_text">No</string>
     <string name="yes_answer_text">Yes</string>
     <string name="you_cant_like_own_posts_message">You can\'t like your own posts!</string>
+    <string name="password_label_confirm">Password confirm</string>
+    <string name="name_label">Name</string>
+    <string name="sign_up_label">Registration</string>
+    <string name="user_already_exists_message">User already exists!</string>
+    <string name="change_avatar_button_text">Change avatar</string>
+    <string name="clear_avatar_button_text">Clear avatar</string>
 </resources>
