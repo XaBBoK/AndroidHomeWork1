@@ -46,4 +46,10 @@
     <string name="ok_button_text">OK</string>
     <string name="check_login_password_message">Check login and password!</string>
     <string name="unknown_error_text">Unknown error!</string>
+    <string name="login_to_like_message">Please login to like!</string>
+    <string name="please_login_to_write_posts_message">Please login to write posts!</string>
+    <string name="are_you_sure_want_to_logout_message">Are you sure you want to log out?</string>
+    <string name="no_answer_text">No</string>
+    <string name="yes_answer_text">Yes</string>
+    <string name="you_cant_like_own_posts_message">You can\'t like your own posts!</string>
 </resources>
