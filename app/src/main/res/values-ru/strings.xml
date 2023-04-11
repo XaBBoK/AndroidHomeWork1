@@ -36,4 +36,15 @@
     <string name="clear_button">Очистить</string>
     <string name="attachment_image_preview">Превью приложения</string>
     <string name="attachment_image_preview_title">Изображение</string>
+    <string name="login">Войти</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="logout">Выйти</string>
+    <string name="sign_in_label">Вход в учетную запись</string>
+    <string name="submit_button_text">Отправить</string>
+    <string name="password_label">Пароль</string>
+    <string name="login_label">Логин</string>
+    <string name="check_login_password_message">Проверьте логин и пароль!</string>
+    <string name="check_internet_connection_text">Проверьте интернет!</string>
+    <string name="unknown_error_text">Неизвестная ошибка!</string>
+    <string name="ok_button_text">OK</string>
 </resources>

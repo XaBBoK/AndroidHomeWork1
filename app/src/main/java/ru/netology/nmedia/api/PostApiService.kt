@@ -11,9 +11,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ru.netology.nmedia.BuildConfig
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.error.*
+import ru.netology.nmedia.presentation.AuthModel
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -30,6 +32,7 @@ private val client = OkHttpClient.Builder()
             it
     }
     .addInterceptor(PostApiInterceptor)
+    .addInterceptor(PostApiAuthInterceptor)
     .build()
 
 private val retrofit = Retrofit.Builder()
@@ -39,6 +42,10 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface PostApiService {
+    @FormUrlEncoded
+    @POST("users/authentication")
+    suspend fun auth(@Field("login") login: String, @Field("pass") pass: String): Response<AuthModel>
+
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>
 
@@ -68,6 +75,18 @@ interface PostApiService {
 object PostApi {
     val service: PostApiService by lazy {
         retrofit.create(PostApiService::class.java)
+    }
+}
+
+object PostApiAuthInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+        val request = AppAuth.getInstance().data.value?.token?.let {
+            chain.request().newBuilder()
+                .addHeader("Authorization", it)
+                .build()
+        } ?: chain.request()
+
+        return chain.proceed(request)
     }
 }
 

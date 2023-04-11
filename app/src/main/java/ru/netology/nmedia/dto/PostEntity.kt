@@ -11,6 +11,7 @@ data class PostEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val author: String = "",
+    val authorId: Long = 0L,
     val authorAvatar: String,
     val content: String = "",
     val published: Long = 0L,
@@ -30,6 +31,7 @@ data class PostEntity(
                 return PostEntity(
                     id = id,
                     author = author,
+                    authorId = authorId,
                     authorAvatar = authorAvatar,
                     content = content,
                     published = published,
@@ -47,6 +49,7 @@ data class PostEntity(
                 return Post(
                     id = id,
                     author = author,
+                    authorId = authorId,
                     content = content,
                     published = published,
                     likedByMe = likedByMe,

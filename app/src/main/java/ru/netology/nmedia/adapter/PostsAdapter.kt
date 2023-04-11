@@ -1,9 +1,9 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -48,6 +48,7 @@ class PostViewHolder(
             //likes.text = formatNumber(post.likes)
             shareButton.text = formatNumber(post.shares)
             postVideoGroup.visibility = if (post.video.isNotEmpty()) VISIBLE else GONE
+            more.isVisible = post.ownedByMe
             avatar.load(
                 url = post.withBaseUrls().authorAvatar,
                 placeholder = R.drawable.ic_avatar_placeholder,
