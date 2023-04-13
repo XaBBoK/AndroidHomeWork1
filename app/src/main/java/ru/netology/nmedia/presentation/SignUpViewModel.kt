@@ -11,7 +11,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import ru.netology.nmedia.api.PostApi
+import ru.netology.nmedia.api.Api
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.error.AppError
 import java.io.File
@@ -87,7 +87,7 @@ class SignUpViewModel : ViewModel() {
 
                             //MultipartBody.Part.createFormData("file", file.name, file.asRequestBody())
 
-                            PostApi.service.registerUser(
+                            Api.service.registerUser(
                                 it.login.toRequestBody("text/plain".toMediaType()),
                                 it.password.toRequestBody("text/plain".toMediaType()),
                                 it.name.toRequestBody("text/plain".toMediaType()),

@@ -11,7 +11,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import ru.netology.nmedia.api.PostApi
+import ru.netology.nmedia.api.Api
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.domain.repository.PostRepository
@@ -38,7 +38,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
                     runCatching {
                         val biggestInvisibleId = dao.getBiggestInvisibleId()
 
-                        val response = PostApi.service.getNewer(biggestInvisibleId ?: id)
+                        val response = Api.service.getNewer(biggestInvisibleId ?: id)
 
                         val body: List<Post> =
                             response.body() ?: throw ApiAppError(response.code(), response.message())
@@ -69,14 +69,14 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
 
     override suspend fun getAll() {
         readMutex.withLock {
-            val response = PostApi.service.getAll()
+            val response = Api.service.getAll()
             val posts = response.body().orEmpty()
             dao.clearAndInsert(posts.map { PostEntity.fromDto(it) })
         }
     }
 
     suspend fun getPostById(id: Long) {
-        val response = PostApi.service.getPostById(id)
+        val response = Api.service.getPostById(id)
         response.body()?.also {
             dao.insert(PostEntity.fromDto(it))
         }
@@ -85,7 +85,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
     override suspend fun likeById(id: Long) {
         dao.likeById(id)
         runCatching {
-            PostApi.service.likeById(id)
+            Api.service.likeById(id)
         }.onFailure {
             dao.unlikeById(id)
             throw it
@@ -96,7 +96,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
         dao.unlikeById(id)
 
         runCatching {
-            PostApi.service.unlikeById(id)
+            Api.service.unlikeById(id)
         }.onFailure {
             dao.likeById(id)
             throw it
@@ -108,7 +108,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
         post.let { originalPost ->
             dao.removeById(id)
             runCatching {
-                PostApi.service.removeById(id)
+                Api.service.removeById(id)
             }.onFailure {
                 dao.addOrEditPost(originalPost)
                 throw it
@@ -117,7 +117,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
     }
 
     override suspend fun addOrEditPost(post: Post) {
-        PostApi.service.addOrEditPost(post).body()?.also { newPost: Post ->
+        Api.service.addOrEditPost(post).body()?.also { newPost: Post ->
             dao.addOrEditPost(PostEntity.fromDto(newPost))
         }
     }
@@ -125,7 +125,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
     override suspend fun addOrEditPostWithAttachment(post: Post, media: MediaModel) {
         val mediaUpload = upload(media)
 
-        PostApi.service.addOrEditPost(
+        Api.service.addOrEditPost(
             post.copy(
                 attachment = Attachment(
                     url = mediaUpload.id,
@@ -141,7 +141,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
         requireNotNull(media.file).let { file ->
             val part =
                 MultipartBody.Part.createFormData("file", file.name, file.asRequestBody())
-            val response = requireNotNull(PostApi.service.uploadMedia(part).body())
+            val response = requireNotNull(Api.service.uploadMedia(part).body())
 
             return response
         }
