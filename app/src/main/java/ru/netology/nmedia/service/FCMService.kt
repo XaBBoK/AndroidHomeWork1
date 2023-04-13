@@ -5,13 +5,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import ru.netology.nmedia.R
+import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.dto.PushMessage
 import kotlin.random.Random
 
 class FCMService : FirebaseMessagingService() {
@@ -38,7 +39,7 @@ class FCMService : FirebaseMessagingService() {
 
 
     override fun onMessageReceived(message: RemoteMessage) {
-        message.data[action]?.let {
+        /*message.data[action]?.let {
             try {
                 when (Action.valueOf(it)) {
                     Action.LIKE -> handleLike(
@@ -52,6 +53,14 @@ class FCMService : FirebaseMessagingService() {
                 e.message?.apply {
                     Log.e("FirebaseMessages", this)
                 }
+            }
+        }*/
+
+        message.data[content]?.let {
+            runCatching {
+                handlePushMessage(gson.fromJson(it, PushMessage::class.java))
+            }.onFailure { e ->
+                e.printStackTrace()
             }
         }
     }
@@ -75,8 +84,48 @@ class FCMService : FirebaseMessagingService() {
             .notify(Random.nextInt(100000), notification)
     }
 
+    @SuppressLint("MissingPermission")
+    private fun handlePushMessage(data: PushMessage) {
+        val currentId: Long? = AppAuth.getInstance().data.value?.id
+        val recipientId: Long? = data.recipientId
+
+        val notificationText: String? =
+            when {
+                recipientId == null -> {
+                    //Массовая рассылка
+                    "${data.content} (Массовая)"
+                }
+                (recipientId != currentId) -> {
+                    //анонимная аутентификация или другая аутентификация, отправляем токен
+                    AppAuth.getInstance().sendPushToken()
+                    null
+                }
+                else -> {
+                    //recipientId == currentId, показываем уведомление
+                    data.content
+                }
+            }
+
+        notificationText?.let {
+            val notification = NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(
+                    getString(R.string.app_name)
+                )
+                .setContentText(it)
+                .setStyle(
+                    NotificationCompat.BigTextStyle().bigText(it)
+                )
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build()
+
+            NotificationManagerCompat.from(this)
+                .notify(Random.nextInt(100000), notification)
+        }
+    }
+
     override fun onNewToken(token: String) {
-        println(token)
+        AppAuth.getInstance().sendPushToken(token)
     }
 }
 

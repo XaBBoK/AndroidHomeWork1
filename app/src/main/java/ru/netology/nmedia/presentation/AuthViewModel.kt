@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.api.PostApi
+import ru.netology.nmedia.api.Api
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.error.AppError
 
@@ -27,12 +27,11 @@ class AuthViewModel : ViewModel() {
 
     fun login() {
         _uiState.value = AuthScreenState.AuthScreenRequesting()
-        println(_creds.value)
         viewModelScope.launch {
             runCatching {
                 creds.value
                     ?.let {
-                        PostApi.service.auth(it.login, it.password).body()
+                        Api.service.auth(it.login, it.password).body()
                     }
                     ?.also {
                         //получен токен

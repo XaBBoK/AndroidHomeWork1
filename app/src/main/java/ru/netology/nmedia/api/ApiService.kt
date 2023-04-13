@@ -11,6 +11,7 @@ import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.PushToken
 import ru.netology.nmedia.error.*
 import ru.netology.nmedia.presentation.AuthModel
 import java.io.IOException
@@ -28,8 +29,8 @@ private val client = OkHttpClient.Builder()
         } else
             it
     }
-    .addInterceptor(PostApiInterceptor)
-    .addInterceptor(PostApiAuthInterceptor)
+    .addInterceptor(ApiInterceptor)
+    .addInterceptor(ApiAuthInterceptor)
     .build()
 
 private val retrofit = Retrofit.Builder()
@@ -38,7 +39,10 @@ private val retrofit = Retrofit.Builder()
     .client(client)
     .build()
 
-interface PostApiService {
+interface ApiService {
+    @POST("users/push-tokens")
+    suspend fun savePushToken(@Body pushToken: PushToken): Response<Unit>
+
     @Multipart
     @POST("users/registration")
     suspend fun registerUser(
@@ -89,13 +93,13 @@ interface PostApiService {
     suspend fun getNewer(@Path("id") id: Long): Response<List<Post>>
 }
 
-object PostApi {
-    val service: PostApiService by lazy {
-        retrofit.create(PostApiService::class.java)
+object Api {
+    val service: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
     }
 }
 
-object PostApiAuthInterceptor : Interceptor {
+object ApiAuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val request = AppAuth.getInstance().data.value?.token?.let {
             chain.request().newBuilder()
@@ -107,7 +111,7 @@ object PostApiAuthInterceptor : Interceptor {
     }
 }
 
-object PostApiInterceptor : Interceptor {
+object ApiInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val request: Request = chain.request()
 
