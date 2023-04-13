@@ -2,12 +2,19 @@ package ru.netology.nmedia.auth
 
 import android.content.Context
 import androidx.core.content.edit
+import androidx.work.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ru.netology.nmedia.presentation.AuthModel
+import ru.netology.nmedia.workers.SendPushTokenWorker
+import java.lang.ref.WeakReference
 
-class AppAuth private constructor(context: Context) {
+class AppAuth private constructor(contextParam: Context) {
+    private var _context: WeakReference<Context> = WeakReference(contextParam)
+    private val context: Context
+        get() = requireNotNull(_context.get())
+
     private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
 
     private val _data: MutableStateFlow<AuthModel?>
@@ -28,6 +35,23 @@ class AppAuth private constructor(context: Context) {
                 AuthModel(id = id, token = token)
             )
         }
+
+        sendPushToken(token)
+    }
+
+    fun sendPushToken(token: String? = null) {
+        val request = OneTimeWorkRequestBuilder<SendPushTokenWorker>()
+            .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
+            .setInputData(
+                Data.Builder()
+                    .putString(SendPushTokenWorker.TOKEN_KEY, token)
+                    .build()
+            )
+            .build()
+
+        WorkManager.getInstance(context)
+            .beginUniqueWork(SendPushTokenWorker.NAME, ExistingWorkPolicy.REPLACE, request)
+            .enqueue()
     }
 
     fun isAuth(): Boolean {
@@ -45,6 +69,7 @@ class AppAuth private constructor(context: Context) {
                 putLong(ID_KEY, id)
                 putString(TOKEN_KEY, token)
             }
+            sendPushToken()
         }
     }
 
@@ -53,6 +78,7 @@ class AppAuth private constructor(context: Context) {
         synchronized(this) {
             _data.value = null
             prefs.edit { clear() }
+            sendPushToken()
         }
     }
 
