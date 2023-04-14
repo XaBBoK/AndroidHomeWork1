@@ -32,7 +32,6 @@ import ru.netology.nmedia.presentation.AuthViewModel
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.presentation.ScreenState
 import ru.netology.nmedia.utils.hideKeyboard
-import ru.netology.nmedia.utils.runWhenReady
 import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
 import ru.netology.nmedia.utils.viewBinding
 
@@ -218,17 +217,14 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         adapter = PostsAdapter(OnPostInteractionListenerImpl(viewModel, this))
         binding.postList.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { data ->
-            binding.postList.runWhenReady {
+            //сортировка вывода списка
+            adapter.submitList(data.posts.sortedByDescending { it.published })
+            binding.postList.post {
                 //показываем текст-заглушку при пустом списке
                 binding.emptyText.visibility =
                     if (viewModel.data.value?.posts?.size == 0) VISIBLE else GONE
-            }
 
-            //сортировка вывода списка
-            adapter.submitList(data.posts.sortedByDescending { it.published })
-
-            if (scrollOnNextSubmit) {
-                binding.postList.runWhenReady {
+                if (scrollOnNextSubmit) {
                     //binding.postList.layoutManager?.scrollToPosition(0)
                     binding.postList.smoothScrollToPosition(0)
                 }
