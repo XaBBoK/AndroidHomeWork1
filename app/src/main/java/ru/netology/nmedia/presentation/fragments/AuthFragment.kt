@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
@@ -16,7 +17,6 @@ import ru.netology.nmedia.error.NetworkAppError
 import ru.netology.nmedia.presentation.AuthScreenState
 import ru.netology.nmedia.presentation.AuthViewModel
 import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
-import ru.netology.nmedia.utils.viewBinding
 
 
 class AuthFragment : Fragment(R.layout.fragment_auth) {

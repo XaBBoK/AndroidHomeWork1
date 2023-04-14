@@ -6,11 +6,11 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentImageViewerBinding
 import ru.netology.nmedia.utils.load
 import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
-import ru.netology.nmedia.utils.viewBinding
 
 class ImageViewerFullscreen : Fragment(R.layout.fragment_image_viewer) {
     private val binding: FragmentImageViewerBinding by viewBinding(

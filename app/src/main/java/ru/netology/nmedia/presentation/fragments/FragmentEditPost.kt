@@ -16,6 +16,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
@@ -26,7 +27,6 @@ import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.utils.load
 import ru.netology.nmedia.utils.setActionBarTitle
 import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
-import ru.netology.nmedia.utils.viewBinding
 
 
 const val INTENT_EXTRA_POST = "POST-DATA"

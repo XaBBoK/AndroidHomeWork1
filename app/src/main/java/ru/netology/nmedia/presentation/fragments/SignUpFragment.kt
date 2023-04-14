@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -25,7 +26,6 @@ import ru.netology.nmedia.presentation.SignUpError
 import ru.netology.nmedia.presentation.SignUpScreenState
 import ru.netology.nmedia.presentation.SignUpViewModel
 import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
-import ru.netology.nmedia.utils.viewBinding
 
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private val binding: FragmentSignUpBinding by viewBinding(FragmentSignUpBinding::bind)
