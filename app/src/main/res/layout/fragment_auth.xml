@@ -16,22 +16,6 @@
         android:orientation="vertical">
 
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="@style/Theme.NMedia.Toolbar"
-                app:layout_scrollFlags="scroll|enterAlways"
-                tools:title="Enter login and password" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
         <androidx.core.widget.NestedScrollView
             android:id="@+id/mainScroll"
             android:layout_width="match_parent"

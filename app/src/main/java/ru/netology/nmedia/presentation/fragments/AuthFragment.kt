@@ -2,7 +2,6 @@ package ru.netology.nmedia.presentation.fragments
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +15,6 @@ import ru.netology.nmedia.error.ApiAppError
 import ru.netology.nmedia.error.NetworkAppError
 import ru.netology.nmedia.presentation.AuthScreenState
 import ru.netology.nmedia.presentation.AuthViewModel
-import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
 
 
 class AuthFragment : Fragment(R.layout.fragment_auth) {
@@ -27,10 +25,10 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
         super.onViewCreated(view, savedInstanceState)
 
         //добавляем верхнее меню с кнопкой назад
-        (activity as? AppCompatActivity)?.apply {
+        /*(activity as? AppCompatActivity)?.apply {
             setSupportActionBar(binding.toolbar)
             setupActionBarWithNavControllerDefault()
-        }
+        }*/
 
         binding.lifecycleOwner = viewLifecycleOwner
 

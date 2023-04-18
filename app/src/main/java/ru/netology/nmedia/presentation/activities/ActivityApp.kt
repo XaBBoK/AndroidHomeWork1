@@ -18,6 +18,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import ru.netology.nmedia.R
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_POST
+import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
 
 class ActivityApp : AppCompatActivity(R.layout.activity_app) {
     private val navHostController by lazy { (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController }
@@ -32,6 +33,8 @@ class ActivityApp : AppCompatActivity(R.layout.activity_app) {
 
         checkGoogleApiAvailability()
         handleIntent()
+
+        setupActionBarWithNavControllerDefault()
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             try {

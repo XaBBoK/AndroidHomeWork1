@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -26,7 +25,6 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.utils.load
 import ru.netology.nmedia.utils.setActionBarTitle
-import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
 
 
 const val INTENT_EXTRA_POST = "POST-DATA"
@@ -42,10 +40,10 @@ class FragmentEditPost : Fragment(R.layout.fragment_edit_post) {
         super.onViewCreated(view, savedInstanceState)
 
         //добавляем верхнее меню с кнопкой назад
-        (activity as? AppCompatActivity)?.apply {
+        /*(activity as? AppCompatActivity)?.apply {
             setSupportActionBar(binding.toolbar)
             setupActionBarWithNavControllerDefault()
-        }
+        }*/
 
         binding.lifecycleOwner = viewLifecycleOwner
 

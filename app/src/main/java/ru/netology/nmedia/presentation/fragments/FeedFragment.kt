@@ -9,7 +9,6 @@ import android.view.View.*
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -33,7 +32,7 @@ import ru.netology.nmedia.presentation.AuthViewModel
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.presentation.ScreenState
 import ru.netology.nmedia.utils.hideKeyboard
-import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
+import ru.netology.nmedia.utils.supportActionBar
 
 @ExperimentalBadgeUtils
 class FeedFragment : Fragment(R.layout.fragment_feed) {
@@ -61,13 +60,15 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        supportActionBar?.setHomeButtonEnabled(false)
+
         //добавляем верхнее меню с кнопкой назад
-        (activity as? AppCompatActivity)?.apply {
+        /*(activity as? AppCompatActivity)?.apply {
             setSupportActionBar(binding.toolbar)
             supportActionBar?.setHomeButtonEnabled(false)
             setupActionBarWithNavControllerDefault()
         }
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)*/
 
         subscribe()
         setupListeners()

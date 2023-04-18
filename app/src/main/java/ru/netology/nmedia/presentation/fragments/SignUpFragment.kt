@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -25,7 +24,6 @@ import ru.netology.nmedia.error.NetworkAppError
 import ru.netology.nmedia.presentation.SignUpError
 import ru.netology.nmedia.presentation.SignUpScreenState
 import ru.netology.nmedia.presentation.SignUpViewModel
-import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
 
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private val binding: FragmentSignUpBinding by viewBinding(FragmentSignUpBinding::bind)
@@ -36,10 +34,10 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
         super.onViewCreated(view, savedInstanceState)
 
         //добавляем верхнее меню с кнопкой назад
-        (activity as? AppCompatActivity)?.apply {
+        /*(activity as? AppCompatActivity)?.apply {
             setSupportActionBar(binding.toolbar)
             setupActionBarWithNavControllerDefault()
-        }
+        }*/
 
         binding.lifecycleOwner = viewLifecycleOwner
 
