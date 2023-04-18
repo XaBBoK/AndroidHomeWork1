@@ -43,6 +43,8 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         factoryProducer = { PostViewModel.Factory(this, PostRepositoryHTTPImpl(requireContext())) }
     )
 
+    private var previousMenuProvider: MenuProvider? = null
+
     private val authViewModel by viewModels<AuthViewModel>()
 
     private lateinit var adapter: PostsAdapter
@@ -56,7 +58,11 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             return false
         }
 
+    override fun onStop() {
+        super.onStop()
 
+        previousMenuProvider?.let { requireActivity().removeMenuProvider(it) }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -294,8 +300,6 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                 //binding.editOrigGroup.visibility = View.VISIBLE
             }
         }
-
-        var previousMenuProvider: MenuProvider? = null
 
         authViewModel.data.observe(viewLifecycleOwner) {
             previousMenuProvider?.let {
