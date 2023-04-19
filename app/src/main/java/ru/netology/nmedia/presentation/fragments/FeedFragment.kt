@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -20,48 +20,34 @@ import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
-import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
-import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.AuthViewModel
+import ru.netology.nmedia.presentation.OnPostInteractionListenerImpl
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.presentation.ScreenState
-import ru.netology.nmedia.presentation.ViewModelFactory
 import ru.netology.nmedia.utils.hideKeyboard
 import ru.netology.nmedia.utils.supportActionBar
+import javax.inject.Inject
 
 @ExperimentalBadgeUtils
+@AndroidEntryPoint
 class FeedFragment : Fragment(R.layout.fragment_feed) {
+    @Inject
+    lateinit var appAuth: AppAuth
+
     private val binding: FragmentFeedBinding by viewBinding(FragmentFeedBinding::bind)
-    private val dependencyContainer = DependencyContainer.getInstance()
 
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment,
-        factoryProducer = {
-            ViewModelFactory(
-                repository = dependencyContainer.repository,
-                appAuth = dependencyContainer.appAuth,
-                apiService = dependencyContainer.apiService
-            )
-        }
-    )
+    private val viewModel: PostViewModel by activityViewModels()
 
-    private var previousMenuProvider: MenuProvider? = null
+    private val authViewModel: AuthViewModel by activityViewModels()
 
-    private val authViewModel: AuthViewModel by viewModels(
-        ownerProducer = ::requireParentFragment,
-        factoryProducer = {
-            ViewModelFactory(
-                repository = dependencyContainer.repository,
-                appAuth = dependencyContainer.appAuth,
-                apiService = dependencyContainer.apiService
-            )
-        }
-    )
+    private var previousMenu: MenuProvider? = null
 
     private lateinit var adapter: PostsAdapter
     private var scrollOnNextSubmit: Boolean = false
@@ -77,8 +63,9 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     override fun onStop() {
         super.onStop()
 
-        previousMenuProvider?.let { requireActivity().removeMenuProvider(it) }
+        previousMenu?.let { requireActivity().removeMenuProvider(it) }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -94,7 +81,56 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
         subscribe()
         setupListeners()
+        makeMenu()
+
         binding.editOrigGroup.visibility = GONE
+    }
+
+    private fun makeMenu() {
+        previousMenu?.let {
+            requireActivity().removeMenuProvider(it)
+        }
+
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_auth, menu)
+
+                menu.setGroupVisible(R.id.authorized, authViewModel.authorized)
+                menu.setGroupVisible(R.id.unauthorized, !authViewModel.authorized)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                when (menuItem.itemId) {
+                    R.id.login -> {
+                        findNavController().navigate(
+                            R.id.action_global_authFragment
+                        )
+                        true
+                    }
+
+                    R.id.register -> {
+                        findNavController().navigate(
+                            R.id.SignUpFragment
+                        )
+                        true
+                    }
+
+                    R.id.logout -> {
+                        AlertDialog.Builder(requireContext())
+                            .setMessage(getString(R.string.are_you_sure_want_to_logout_message))
+                            .setNegativeButton(getString(R.string.no_answer_text)) { _, _ -> }
+                            .setPositiveButton(getString(R.string.yes_answer_text)) { _, _ ->
+                                appAuth.removeAuth()
+                            }
+                            .create()
+                            .show()
+
+                        true
+                    }
+
+                    else -> false
+                }
+        }.also { previousMenu = it }, viewLifecycleOwner)
     }
 
 
@@ -107,7 +143,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             }
 
             lifecycleScope.launch {
-                if (!dependencyContainer.appAuth.isAuth()) {
+                if (!appAuth.isAuth()) {
                     Toast.makeText(
                         requireContext(),
                         getString(R.string.please_login_to_write_posts_message),
@@ -127,7 +163,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
         binding.submitButton.setOnLongClickListener {
             lifecycleScope.launch {
-                if (!dependencyContainer.appAuth.isAuth()) {
+                if (!appAuth.isAuth()) {
                     Toast.makeText(
                         requireContext(),
                         getString(R.string.please_login_to_write_posts_message),
@@ -237,11 +273,13 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     @OptIn(ExperimentalBadgeUtils::class)
     private fun subscribe() {
-        adapter = PostsAdapter(OnPostInteractionListenerImpl(
-            viewModel = viewModel,
-            fragment = this,
-            appAuth = dependencyContainer.appAuth
-        ))
+        adapter = PostsAdapter(
+            OnPostInteractionListenerImpl(
+                viewModel = viewModel,
+                fragment = this,
+                appAuth = appAuth
+            )
+        )
         binding.postList.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { data ->
             //сортировка вывода списка
@@ -322,49 +360,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         }
 
         authViewModel.data.observe(viewLifecycleOwner) {
-            previousMenuProvider?.let {
-                requireActivity().removeMenuProvider(it)
-            }
-
-            requireActivity().addMenuProvider(object : MenuProvider {
-                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.menu_auth, menu)
-
-                    menu.setGroupVisible(R.id.authorized, authViewModel.authorized)
-                    menu.setGroupVisible(R.id.unauthorized, !authViewModel.authorized)
-                }
-
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
-                    when (menuItem.itemId) {
-                        R.id.login -> {
-                            findNavController().navigate(
-                                R.id.action_global_authFragment
-                            )
-                            true
-                        }
-
-                        R.id.register -> {
-                            findNavController().navigate(
-                                R.id.SignUpFragment
-                            )
-                            true
-                        }
-
-                        R.id.logout -> {
-                            AlertDialog.Builder(requireContext())
-                                .setMessage(getString(R.string.are_you_sure_want_to_logout_message))
-                                .setNegativeButton(getString(R.string.no_answer_text)) { _, _ -> }
-                                .setPositiveButton(getString(R.string.yes_answer_text)) { _, _ ->
-                                    dependencyContainer.appAuth.removeAuth()
-                                }
-                                .create()
-                                .show()
-
-                            true
-                        }
-                        else -> false
-                    }
-            }.also { previousMenuProvider = it }, viewLifecycleOwner)
+            requireActivity().invalidateOptionsMenu()
         }
     }
 }

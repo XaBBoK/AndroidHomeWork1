@@ -8,14 +8,22 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ru.netology.nmedia.presentation.AuthModel
 import ru.netology.nmedia.workers.SendPushTokenWorker
 import java.lang.ref.WeakReference
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AppAuth(contextParam: Context, private val workManager: WorkManager) {
+@Singleton
+class AppAuth @Inject constructor(
+    @ApplicationContext
+    contextParam: Context,
+    private val workManager: WorkManager
+    ) {
     private var _context: WeakReference<Context> = WeakReference(contextParam)
     private val context: Context
         get() = requireNotNull(_context.get())

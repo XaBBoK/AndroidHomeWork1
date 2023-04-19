@@ -4,38 +4,35 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
-import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
-import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.AttachmentType
+import ru.netology.nmedia.presentation.OnPostInteractionListenerImpl
 import ru.netology.nmedia.presentation.PostViewModel
-import ru.netology.nmedia.presentation.ViewModelFactory
 import ru.netology.nmedia.utils.load
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class FragmentPostDetails : Fragment(R.layout.fragment_post_details) {
 
     private val binding: FragmentPostDetailsBinding by viewBinding(FragmentPostDetailsBinding::bind)
-    private val dependencyContainer = DependencyContainer.getInstance()
-    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment,
-        factoryProducer = {
-            ViewModelFactory(
-                repository = dependencyContainer.repository,
-                appAuth = dependencyContainer.appAuth,
-                apiService = dependencyContainer.apiService
-            )
-        })
+    private val viewModel: PostViewModel by activityViewModels()
+
+    @Inject
+    lateinit var appAuth: AppAuth
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val onInteractionListener = OnPostInteractionListenerImpl(
             viewModel = viewModel,
             fragment = this,
-            appAuth = dependencyContainer.appAuth
+            appAuth = appAuth
         )
 
         binding.post = arguments?.getParcelable(

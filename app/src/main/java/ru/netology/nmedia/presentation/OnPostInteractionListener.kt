@@ -1,4 +1,4 @@
-package ru.netology.nmedia.data.repository
+package ru.netology.nmedia.presentation
 
 import android.view.View
 import ru.netology.nmedia.dto.Post

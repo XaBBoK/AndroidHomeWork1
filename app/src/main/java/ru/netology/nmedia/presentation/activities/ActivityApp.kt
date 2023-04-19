@@ -15,16 +15,23 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
-import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_POST
 import ru.netology.nmedia.utils.setupActionBarWithNavControllerDefault
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ActivityApp : AppCompatActivity(R.layout.activity_app) {
-    private val dependencyContainer = DependencyContainer.getInstance()
     private val navHostController by lazy { (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController }
     private val appBarConf by lazy { AppBarConfiguration(navHostController.graph) }
+
+    @Inject
+    lateinit var firebaseMsg: FirebaseMessaging
+
+    @Inject
+    lateinit var googleApiAvailability: GoogleApiAvailability
     override fun onSupportNavigateUp(): Boolean {
         return navHostController.navigateUp(appBarConf) || super.onSupportNavigateUp()
     }
@@ -38,7 +45,8 @@ class ActivityApp : AppCompatActivity(R.layout.activity_app) {
 
         setupActionBarWithNavControllerDefault()
 
-        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+
+        firebaseMsg.token.addOnCompleteListener {
             try {
                 if (it.isComplete) {
                     val firebaseToken = it.result.toString()
@@ -54,7 +62,7 @@ class ActivityApp : AppCompatActivity(R.layout.activity_app) {
     }
 
     private fun checkGoogleApiAvailability() {
-        with(GoogleApiAvailability.getInstance()) {
+        with(googleApiAvailability) {
             val code = isGooglePlayServicesAvailable(this@ActivityApp)
             if (code == ConnectionResult.SUCCESS) {
                 return@with
@@ -66,7 +74,7 @@ class ActivityApp : AppCompatActivity(R.layout.activity_app) {
             Toast.makeText(this@ActivityApp, "Google Api Unavailable", Toast.LENGTH_LONG).show()
         }
 
-        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+        firebaseMsg.token.addOnSuccessListener {
             println(it)
         }
     }
