@@ -63,7 +63,13 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     override fun onStop() {
         super.onStop()
 
-        previousMenu?.let { requireActivity().removeMenuProvider(it) }
+        clearMenu()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        makeMenu()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,15 +87,12 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
         subscribe()
         setupListeners()
-        makeMenu()
 
         binding.editOrigGroup.visibility = GONE
     }
 
     private fun makeMenu() {
-        previousMenu?.let {
-            requireActivity().removeMenuProvider(it)
-        }
+        clearMenu()
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -131,6 +134,10 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                     else -> false
                 }
         }.also { previousMenu = it }, viewLifecycleOwner)
+    }
+
+    private fun clearMenu() {
+        previousMenu?.let { requireActivity().removeMenuProvider(it) }
     }
 
 
