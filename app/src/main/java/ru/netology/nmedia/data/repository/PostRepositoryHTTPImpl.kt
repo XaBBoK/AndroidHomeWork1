@@ -1,6 +1,5 @@
 package ru.netology.nmedia.data.repository
 
-import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -11,16 +10,19 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import ru.netology.nmedia.api.Api
+import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.domain.repository.PostRepository
-import ru.netology.nmedia.dto.*
+import ru.netology.nmedia.dto.Attachment
+import ru.netology.nmedia.dto.AttachmentType
+import ru.netology.nmedia.dto.Media
+import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.PostEntity
+import ru.netology.nmedia.dto.toDto
 import ru.netology.nmedia.error.ApiAppError
 import ru.netology.nmedia.presentation.MediaModel
 
-class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
-    private val dao: PostDao = AppDb.getInstance(context).postDao()
+class PostRepositoryHTTPImpl(private val dao: PostDao, val api: ApiService) : PostRepository {
     override val data: Flow<List<Post>> = dao.getAll()
         .map {
             it.filter { postEntity -> postEntity.visible }
@@ -38,10 +40,13 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
                     runCatching {
                         val biggestInvisibleId = dao.getBiggestInvisibleId()
 
-                        val response = Api.service.getNewer(biggestInvisibleId ?: id)
+                        val response = api.getNewer(biggestInvisibleId ?: id)
 
                         val body: List<Post> =
-                            response.body() ?: throw ApiAppError(response.code(), response.message())
+                            response.body() ?: throw ApiAppError(
+                                response.code(),
+                                response.message()
+                            )
                         val p = body
                             .map {
                                 PostEntity.fromDto(it)
@@ -69,14 +74,14 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
 
     override suspend fun getAll() {
         readMutex.withLock {
-            val response = Api.service.getAll()
+            val response = api.getAll()
             val posts = response.body().orEmpty()
             dao.clearAndInsert(posts.map { PostEntity.fromDto(it) })
         }
     }
 
     suspend fun getPostById(id: Long) {
-        val response = Api.service.getPostById(id)
+        val response = api.getPostById(id)
         response.body()?.also {
             dao.insert(PostEntity.fromDto(it))
         }
@@ -85,7 +90,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
     override suspend fun likeById(id: Long) {
         dao.likeById(id)
         runCatching {
-            Api.service.likeById(id)
+            api.likeById(id)
         }.onFailure {
             dao.unlikeById(id)
             throw it
@@ -96,7 +101,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
         dao.unlikeById(id)
 
         runCatching {
-            Api.service.unlikeById(id)
+            api.unlikeById(id)
         }.onFailure {
             dao.likeById(id)
             throw it
@@ -108,7 +113,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
         post.let { originalPost ->
             dao.removeById(id)
             runCatching {
-                Api.service.removeById(id)
+                api.removeById(id)
             }.onFailure {
                 dao.addOrEditPost(originalPost)
                 throw it
@@ -117,7 +122,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
     }
 
     override suspend fun addOrEditPost(post: Post) {
-        Api.service.addOrEditPost(post).body()?.also { newPost: Post ->
+        api.addOrEditPost(post).body()?.also { newPost: Post ->
             dao.addOrEditPost(PostEntity.fromDto(newPost))
         }
     }
@@ -125,7 +130,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
     override suspend fun addOrEditPostWithAttachment(post: Post, media: MediaModel) {
         val mediaUpload = upload(media)
 
-        Api.service.addOrEditPost(
+        api.addOrEditPost(
             post.copy(
                 attachment = Attachment(
                     url = mediaUpload.id,
@@ -141,7 +146,7 @@ class PostRepositoryHTTPImpl(private val context: Context) : PostRepository {
         requireNotNull(media.file).let { file ->
             val part =
                 MultipartBody.Part.createFormData("file", file.name, file.asRequestBody())
-            val response = requireNotNull(Api.service.uploadMedia(part).body())
+            val response = requireNotNull(api.uploadMedia(part).body())
 
             return response
         }

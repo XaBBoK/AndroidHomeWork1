@@ -22,13 +22,14 @@ import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_POST
 
 class OnPostInteractionListenerImpl(
     private val viewModel: PostViewModel,
-    private val fragment: Fragment
+    private val fragment: Fragment,
+    private val appAuth: AppAuth
 ) :
     OnPostInteractionListener {
 
     override fun onLike(post: Post) {
         fragment.lifecycleScope.launch {
-            if (!AppAuth.getInstance().isAuth()) {
+            if (!appAuth.isAuth()) {
                 Toast.makeText(
                     fragment.requireContext(),
                     fragment.requireContext().getString(R.string.login_to_like_message),

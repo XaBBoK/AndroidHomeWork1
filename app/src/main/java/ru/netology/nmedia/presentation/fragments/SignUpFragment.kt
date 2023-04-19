@@ -19,15 +19,27 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentSignUpBinding
+import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.error.ApiAppError
 import ru.netology.nmedia.error.NetworkAppError
 import ru.netology.nmedia.presentation.SignUpError
 import ru.netology.nmedia.presentation.SignUpScreenState
 import ru.netology.nmedia.presentation.SignUpViewModel
+import ru.netology.nmedia.presentation.ViewModelFactory
 
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private val binding: FragmentSignUpBinding by viewBinding(FragmentSignUpBinding::bind)
-    private val signupViewModel: SignUpViewModel by viewModels()
+    private val dependencyContainer = DependencyContainer.getInstance()
+    private val signupViewModel: SignUpViewModel by viewModels(
+        ownerProducer = ::requireParentFragment,
+        factoryProducer = {
+            ViewModelFactory(
+                repository = dependencyContainer.repository,
+                appAuth = dependencyContainer.appAuth,
+                apiService = dependencyContainer.apiService
+            )
+        }
+    )
     private lateinit var photoLauncher: ActivityResultLauncher<Intent>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

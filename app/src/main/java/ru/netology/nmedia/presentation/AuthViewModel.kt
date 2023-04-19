@@ -1,18 +1,22 @@
 package ru.netology.nmedia.presentation
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.api.Api
+import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.error.AppError
 
-class AuthViewModel : ViewModel() {
-    val data = AppAuth.getInstance()
-        .data.asLiveData(Dispatchers.Default)
+class AuthViewModel(private val appAuth: AppAuth, private val apiService: ApiService) :
+    ViewModel() {
+    val data = appAuth.data.asLiveData(Dispatchers.Default)
 
     val authorized: Boolean
         get() = data.value != null
@@ -31,11 +35,11 @@ class AuthViewModel : ViewModel() {
             runCatching {
                 creds.value
                     ?.let {
-                        Api.service.auth(it.login, it.password).body()
+                        apiService.auth(it.login, it.password).body()
                     }
                     ?.also {
                         //получен токен
-                        AppAuth.getInstance().setAuth(it.id, it.token)
+                        appAuth.setAuth(it.id, it.token)
                         _uiState.emit(AuthScreenState.AuthScreenMustNavigateUp())
                     }
             }.onFailure {

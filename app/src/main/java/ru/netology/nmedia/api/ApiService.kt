@@ -2,42 +2,15 @@ package ru.netology.nmedia.api
 
 import kotlinx.coroutines.CancellationException
 import okhttp3.*
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import ru.netology.nmedia.BuildConfig
-import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.PushToken
 import ru.netology.nmedia.error.*
 import ru.netology.nmedia.presentation.AuthModel
 import java.io.IOException
-import java.util.concurrent.TimeUnit
-
-private val logging = HttpLoggingInterceptor().apply {
-    level = HttpLoggingInterceptor.Level.BODY
-}
-
-private val client = OkHttpClient.Builder()
-    .connectTimeout(10, TimeUnit.SECONDS)
-    .let {
-        if (BuildConfig.DEBUG) {
-            it.addInterceptor(logging)
-        } else
-            it
-    }
-    .addInterceptor(ApiInterceptor)
-    .addInterceptor(ApiAuthInterceptor)
-    .build()
-
-private val retrofit = Retrofit.Builder()
-    .baseUrl(BuildConfig.BASE_URL_API)
-    .addConverterFactory(GsonConverterFactory.create())
-    .client(client)
-    .build()
 
 interface ApiService {
     @POST("users/push-tokens")
@@ -93,15 +66,10 @@ interface ApiService {
     suspend fun getNewer(@Path("id") id: Long): Response<List<Post>>
 }
 
-object Api {
-    val service: ApiService by lazy {
-        retrofit.create(ApiService::class.java)
-    }
-}
-
 object ApiAuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-        val request = AppAuth.getInstance().data.value?.token?.let {
+
+        val request = DependencyContainer.getInstance().appAuth.data.value?.token?.let {
             chain.request().newBuilder()
                 .addHeader("Authorization", it)
                 .build()

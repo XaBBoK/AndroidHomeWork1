@@ -2,7 +2,12 @@ package ru.netology.nmedia.auth
 
 import android.content.Context
 import androidx.core.content.edit
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,7 +15,7 @@ import ru.netology.nmedia.presentation.AuthModel
 import ru.netology.nmedia.workers.SendPushTokenWorker
 import java.lang.ref.WeakReference
 
-class AppAuth private constructor(contextParam: Context) {
+class AppAuth(contextParam: Context, private val workManager: WorkManager) {
     private var _context: WeakReference<Context> = WeakReference(contextParam)
     private val context: Context
         get() = requireNotNull(_context.get())
@@ -49,7 +54,7 @@ class AppAuth private constructor(contextParam: Context) {
             )
             .build()
 
-        WorkManager.getInstance(context)
+        workManager
             .beginUniqueWork(SendPushTokenWorker.NAME, ExistingWorkPolicy.REPLACE, request)
             .enqueue()
     }
@@ -85,21 +90,5 @@ class AppAuth private constructor(contextParam: Context) {
     companion object {
         const val TOKEN_KEY = "TOKEN_KEY"
         const val ID_KEY = "ID_KEY"
-
-        @Volatile
-        private var INSTANCE: AppAuth? = null
-
-        fun getInstance(): AppAuth = synchronized(this) {
-            requireNotNull(INSTANCE) {
-                "You must call 'init(context: Context)' before 'getInstance'"
-            }
-        }
-
-        fun init(context: Context): AppAuth = synchronized(this) {
-            INSTANCE ?: AppAuth(context).apply {
-                INSTANCE = this
-            }
-        }
-
     }
 }

@@ -1,9 +1,7 @@
 package ru.netology.nmedia.presentation
 
 import android.net.Uri
-import android.os.Bundle
 import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
@@ -17,7 +15,7 @@ import java.io.File
 
 class PostViewModel(
     private val repository: PostRepository,
-    private val savedStateHandler: SavedStateHandle,
+    appAuth: AppAuth
     //private val scope: CoroutineScope = MainScope()
 ) : ViewModel() {
     val edited: MutableLiveData<Post?> = MutableLiveData(null)
@@ -32,7 +30,7 @@ class PostViewModel(
     private val _state = MutableLiveData<ScreenState>(ScreenState.Working())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val data: LiveData<FeedModel> = AppAuth.getInstance().data.flatMapLatest { auth ->
+    val data: LiveData<FeedModel> = appAuth.data.flatMapLatest { auth ->
         repository.data
             .map { posts ->
                 FeedModel(posts.map {
@@ -175,18 +173,19 @@ class PostViewModel(
         edited.value = null
     }
 
-    class Factory(
-        owner: SavedStateRegistryOwner,
-        private val repo: PostRepository,
-        defaultArgs: Bundle? = null
-
-    ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
-        override fun <T : ViewModel> create(
-            key: String, modelClass: Class<T>, handle: SavedStateHandle
-        ): T {
-            @Suppress("UNCHECKED_CAST") return PostViewModel(
-                repository = repo, savedStateHandler = handle
-            ) as T
-        }
-    }
+//    class Factory(
+//        owner: SavedStateRegistryOwner,
+//        private val repo: PostRepository,
+//        private val appAuth: AppAuth,
+//        defaultArgs: Bundle? = null
+//
+//    ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+//        override fun <T : ViewModel> create(
+//            key: String, modelClass: Class<T>, handle: SavedStateHandle
+//        ): T {
+//            @Suppress("UNCHECKED_CAST") return PostViewModel(
+//                repository = repo, savedStateHandler = handle, appAuth = appAuth
+//            ) as T
+//        }
+//    }
 }

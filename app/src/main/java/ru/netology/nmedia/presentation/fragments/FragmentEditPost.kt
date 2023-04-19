@@ -19,10 +19,12 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
+import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
+import ru.netology.nmedia.presentation.ViewModelFactory
 import ru.netology.nmedia.utils.load
 import ru.netology.nmedia.utils.setActionBarTitle
 
@@ -34,7 +36,17 @@ class FragmentEditPost : Fragment(R.layout.fragment_edit_post) {
 
     private val binding: FragmentEditPostBinding by viewBinding(FragmentEditPostBinding::bind)
     private lateinit var photoLauncher: ActivityResultLauncher<Intent>
-    private val viewModel by viewModels<PostViewModel>({ requireParentFragment() })
+    private val dependencyContainer = DependencyContainer.getInstance()
+    private val viewModel: PostViewModel by viewModels(
+        ownerProducer = ::requireParentFragment,
+        factoryProducer = {
+            ViewModelFactory(
+                repository = dependencyContainer.repository,
+                appAuth = dependencyContainer.appAuth,
+                apiService = dependencyContainer.apiService
+            )
+        }
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

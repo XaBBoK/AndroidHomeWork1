@@ -23,29 +23,45 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.PostsAdapter
-import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
-import ru.netology.nmedia.data.repository.PostRepositoryHTTPImpl
 import ru.netology.nmedia.databinding.FragmentFeedBinding
+import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.AuthViewModel
 import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.presentation.ScreenState
+import ru.netology.nmedia.presentation.ViewModelFactory
 import ru.netology.nmedia.utils.hideKeyboard
 import ru.netology.nmedia.utils.supportActionBar
 
 @ExperimentalBadgeUtils
 class FeedFragment : Fragment(R.layout.fragment_feed) {
     private val binding: FragmentFeedBinding by viewBinding(FragmentFeedBinding::bind)
+    private val dependencyContainer = DependencyContainer.getInstance()
 
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
-        factoryProducer = { PostViewModel.Factory(this, PostRepositoryHTTPImpl(requireContext())) }
+        factoryProducer = {
+            ViewModelFactory(
+                repository = dependencyContainer.repository,
+                appAuth = dependencyContainer.appAuth,
+                apiService = dependencyContainer.apiService
+            )
+        }
     )
 
     private var previousMenuProvider: MenuProvider? = null
 
-    private val authViewModel by viewModels<AuthViewModel>()
+    private val authViewModel: AuthViewModel by viewModels(
+        ownerProducer = ::requireParentFragment,
+        factoryProducer = {
+            ViewModelFactory(
+                repository = dependencyContainer.repository,
+                appAuth = dependencyContainer.appAuth,
+                apiService = dependencyContainer.apiService
+            )
+        }
+    )
 
     private lateinit var adapter: PostsAdapter
     private var scrollOnNextSubmit: Boolean = false
@@ -91,7 +107,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             }
 
             lifecycleScope.launch {
-                if (!AppAuth.getInstance().isAuth()) {
+                if (!dependencyContainer.appAuth.isAuth()) {
                     Toast.makeText(
                         requireContext(),
                         getString(R.string.please_login_to_write_posts_message),
@@ -111,7 +127,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
         binding.submitButton.setOnLongClickListener {
             lifecycleScope.launch {
-                if (!AppAuth.getInstance().isAuth()) {
+                if (!dependencyContainer.appAuth.isAuth()) {
                     Toast.makeText(
                         requireContext(),
                         getString(R.string.please_login_to_write_posts_message),
@@ -221,7 +237,11 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     @OptIn(ExperimentalBadgeUtils::class)
     private fun subscribe() {
-        adapter = PostsAdapter(OnPostInteractionListenerImpl(viewModel, this))
+        adapter = PostsAdapter(OnPostInteractionListenerImpl(
+            viewModel = viewModel,
+            fragment = this,
+            appAuth = dependencyContainer.appAuth
+        ))
         binding.postList.adapter = adapter
         viewModel.data.observe(viewLifecycleOwner) { data ->
             //сортировка вывода списка
@@ -335,7 +355,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                                 .setMessage(getString(R.string.are_you_sure_want_to_logout_message))
                                 .setNegativeButton(getString(R.string.no_answer_text)) { _, _ -> }
                                 .setPositiveButton(getString(R.string.yes_answer_text)) { _, _ ->
-                                    AppAuth.getInstance().removeAuth()
+                                    dependencyContainer.appAuth.removeAuth()
                                 }
                                 .create()
                                 .show()

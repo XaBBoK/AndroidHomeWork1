@@ -11,12 +11,12 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import ru.netology.nmedia.api.Api
+import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.error.AppError
 import java.io.File
 
-class SignUpViewModel : ViewModel() {
+class SignUpViewModel(private val apiService: ApiService, val appAuth: AppAuth) : ViewModel() {
     private val _data = MutableLiveData(
         SignUpModel(name = "", login = "", password = "", password_confirm = "", avatar = null)
     )
@@ -87,15 +87,21 @@ class SignUpViewModel : ViewModel() {
 
                             //MultipartBody.Part.createFormData("file", file.name, file.asRequestBody())
 
-                            Api.service.registerUser(
+                            apiService.registerUser(
                                 it.login.toRequestBody("text/plain".toMediaType()),
                                 it.password.toRequestBody("text/plain".toMediaType()),
                                 it.name.toRequestBody("text/plain".toMediaType()),
-                                it.avatar?.let { file -> MultipartBody.Part.createFormData("file", file.name, file.asRequestBody()) }
+                                it.avatar?.let { file ->
+                                    MultipartBody.Part.createFormData(
+                                        "file",
+                                        file.name,
+                                        file.asRequestBody()
+                                    )
+                                }
                             ).body()
                         }
                         ?.also {
-                            AppAuth.getInstance().setAuth(it.id, it.token)
+                            appAuth.setAuth(it.id, it.token)
                             setScreenState(SignUpScreenState.SignUpScreenMustNavigateUp())
                         }
                 }.onFailure {

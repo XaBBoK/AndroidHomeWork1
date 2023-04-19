@@ -10,20 +10,33 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.netology.nmedia.R
 import ru.netology.nmedia.data.repository.OnPostInteractionListenerImpl
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
+import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.presentation.PostViewModel
+import ru.netology.nmedia.presentation.ViewModelFactory
 import ru.netology.nmedia.utils.load
 
 
 class FragmentPostDetails : Fragment(R.layout.fragment_post_details) {
 
     private val binding: FragmentPostDetailsBinding by viewBinding(FragmentPostDetailsBinding::bind)
-
-    private val viewModel by viewModels<PostViewModel>({ requireParentFragment() })
+    private val dependencyContainer = DependencyContainer.getInstance()
+    private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment,
+        factoryProducer = {
+            ViewModelFactory(
+                repository = dependencyContainer.repository,
+                appAuth = dependencyContainer.appAuth,
+                apiService = dependencyContainer.apiService
+            )
+        })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val onInteractionListener = OnPostInteractionListenerImpl(viewModel, this)
+        val onInteractionListener = OnPostInteractionListenerImpl(
+            viewModel = viewModel,
+            fragment = this,
+            appAuth = dependencyContainer.appAuth
+        )
 
         binding.post = arguments?.getParcelable(
             INTENT_EXTRA_POST

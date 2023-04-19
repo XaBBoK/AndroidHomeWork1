@@ -11,7 +11,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import ru.netology.nmedia.R
-import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.PushMessage
 import kotlin.random.Random
 
@@ -86,7 +86,7 @@ class FCMService : FirebaseMessagingService() {
 
     @SuppressLint("MissingPermission")
     private fun handlePushMessage(data: PushMessage) {
-        val currentId: Long? = AppAuth.getInstance().data.value?.id
+        val currentId: Long? = DependencyContainer.getInstance().appAuth.data.value?.id
         val recipientId: Long? = data.recipientId
 
         val notificationText: String? =
@@ -97,7 +97,7 @@ class FCMService : FirebaseMessagingService() {
                 }
                 (recipientId != currentId) -> {
                     //анонимная аутентификация или другая аутентификация, отправляем токен
-                    AppAuth.getInstance().sendPushToken()
+                    DependencyContainer.getInstance().appAuth.sendPushToken()
                     null
                 }
                 else -> {
@@ -125,7 +125,7 @@ class FCMService : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        AppAuth.getInstance().sendPushToken(token)
+        DependencyContainer.getInstance().appAuth.sendPushToken(token)
     }
 }
 
