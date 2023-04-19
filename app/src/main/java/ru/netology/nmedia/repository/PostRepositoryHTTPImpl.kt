@@ -1,4 +1,4 @@
-package ru.netology.nmedia.data.repository
+package ru.netology.nmedia.repository
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -12,7 +12,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.domain.repository.PostRepository
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Media
@@ -21,8 +20,9 @@ import ru.netology.nmedia.dto.PostEntity
 import ru.netology.nmedia.dto.toDto
 import ru.netology.nmedia.error.ApiAppError
 import ru.netology.nmedia.presentation.MediaModel
+import javax.inject.Inject
 
-class PostRepositoryHTTPImpl(private val dao: PostDao, val api: ApiService) : PostRepository {
+class PostRepositoryHTTPImpl @Inject constructor(private val dao: PostDao, val api: ApiService) : PostRepository {
     override val data: Flow<List<Post>> = dao.getAll()
         .map {
             it.filter { postEntity -> postEntity.visible }

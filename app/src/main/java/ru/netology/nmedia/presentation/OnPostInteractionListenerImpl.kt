@@ -1,4 +1,4 @@
-package ru.netology.nmedia.data.repository
+package ru.netology.nmedia.presentation
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.presentation.PostViewModel
 import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_IMAGE_URI
 import ru.netology.nmedia.presentation.fragments.INTENT_EXTRA_POST
 

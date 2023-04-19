@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -15,8 +16,10 @@ import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.error.AppError
 import java.io.File
+import javax.inject.Inject
 
-class SignUpViewModel(private val apiService: ApiService, val appAuth: AppAuth) : ViewModel() {
+@HiltViewModel
+class SignUpViewModel @Inject constructor(private val apiService: ApiService, val appAuth: AppAuth) : ViewModel() {
     private val _data = MutableLiveData(
         SignUpModel(name = "", login = "", password = "", password_confirm = "", avatar = null)
     )

@@ -2,18 +2,21 @@ package ru.netology.nmedia.presentation
 
 import android.net.Uri
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.domain.repository.PostRepository
+import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.SingleLiveEvent
 import java.io.File
+import javax.inject.Inject
 
-class PostViewModel(
+@HiltViewModel
+class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     appAuth: AppAuth
     //private val scope: CoroutineScope = MainScope()

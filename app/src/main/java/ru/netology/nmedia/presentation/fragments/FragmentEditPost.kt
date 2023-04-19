@@ -13,18 +13,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentEditPostBinding
-import ru.netology.nmedia.di.DependencyContainer
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.NON_EXISTING_POST_ID
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.presentation.PostViewModel
-import ru.netology.nmedia.presentation.ViewModelFactory
 import ru.netology.nmedia.utils.load
 import ru.netology.nmedia.utils.setActionBarTitle
 
@@ -32,21 +31,12 @@ import ru.netology.nmedia.utils.setActionBarTitle
 const val INTENT_EXTRA_POST = "POST-DATA"
 const val INTENT_EXTRA_IMAGE_URI = "IMAGE-URI"
 
+@AndroidEntryPoint
 class FragmentEditPost : Fragment(R.layout.fragment_edit_post) {
 
     private val binding: FragmentEditPostBinding by viewBinding(FragmentEditPostBinding::bind)
     private lateinit var photoLauncher: ActivityResultLauncher<Intent>
-    private val dependencyContainer = DependencyContainer.getInstance()
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment,
-        factoryProducer = {
-            ViewModelFactory(
-                repository = dependencyContainer.repository,
-                appAuth = dependencyContainer.appAuth,
-                apiService = dependencyContainer.apiService
-            )
-        }
-    )
+    private val viewModel: PostViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
