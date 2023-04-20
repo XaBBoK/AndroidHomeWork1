@@ -10,7 +10,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -29,7 +29,7 @@ import ru.netology.nmedia.presentation.SignUpViewModel
 @AndroidEntryPoint
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private val binding: FragmentSignUpBinding by viewBinding(FragmentSignUpBinding::bind)
-    private val signupViewModel: SignUpViewModel by activityViewModels()
+    private val signupViewModel: SignUpViewModel by viewModels()
     private lateinit var photoLauncher: ActivityResultLauncher<Intent>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

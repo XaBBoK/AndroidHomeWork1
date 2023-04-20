@@ -13,6 +13,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -45,7 +46,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     private val viewModel: PostViewModel by activityViewModels()
 
-    private val authViewModel: AuthViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by viewModels()
 
     private var previousMenu: MenuProvider? = null
 
