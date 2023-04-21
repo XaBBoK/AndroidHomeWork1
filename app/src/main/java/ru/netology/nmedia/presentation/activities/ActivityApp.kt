@@ -44,6 +44,7 @@ class ActivityApp : AppCompatActivity(R.layout.activity_app) {
         handleIntent()
 
         setupActionBarWithNavControllerDefault()
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
 
         firebaseMsg.token.addOnCompleteListener {

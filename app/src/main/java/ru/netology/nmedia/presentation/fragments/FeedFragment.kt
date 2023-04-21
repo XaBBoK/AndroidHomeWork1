@@ -1,6 +1,8 @@
 package ru.netology.nmedia.presentation.fragments
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -9,13 +11,14 @@ import android.view.View.*
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.badge.BadgeDrawable
@@ -74,8 +77,29 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         makeMenu()
     }
 
+    private fun getThemeAttributeValue(
+        themeValue: Resources.Theme,
+        attribute: Int
+    ): Int {
+        val typedVal = TypedValue()
+
+        themeValue.resolveAttribute(
+            attribute, typedVal, true
+        )
+
+        return typedVal.data
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        supportActionBar?.show()
+//восстановление обычного цвета заголовка из темы
+        (activity as? AppCompatActivity)?.apply {
+            val color = getThemeAttributeValue(theme, androidx.appcompat.R.attr.colorPrimaryDark)
+            window.statusBarColor = color
+            supportActionBar?.setBackgroundDrawable(color.toDrawable())
+        }
 
         supportActionBar?.setHomeButtonEnabled(false)
 
